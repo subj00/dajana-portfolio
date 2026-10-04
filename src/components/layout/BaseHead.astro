@@ -1,0 +1,54 @@
+---
+/**
+ * Document metadata and SEO tags. Defaults come from src/config/site.ts.
+ */
+import { siteConfig } from "@/config/site";
+import "@/styles/global.css";
+
+export interface Props {
+  /** Page title. Omit on the home page to use the site title alone. */
+  title?: string;
+  description?: string;
+  /** Absolute or root-relative path to a social preview image. */
+  image?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = siteConfig.description,
+  image = siteConfig.seo.defaultOgImage,
+  noIndex = false,
+} = Astro.props;
+
+const fullTitle = title
+  ? `${title}${siteConfig.titleSeparator}${siteConfig.siteTitle}`
+  : siteConfig.siteTitle;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = image ? new URL(image, Astro.site).toString() : undefined;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteConfig.siteTitle} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={siteConfig.seo.twitterCard} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{imageUrl && <meta name="twitter:image" content={imageUrl} />}

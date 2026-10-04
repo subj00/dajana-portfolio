@@ -1,0 +1,27 @@
+---
+/**
+ * Site header. Structural placeholder only — design comes later.
+ */
+import { siteConfig } from "@/config/site";
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header>
+  <nav aria-label="Main" class="container-page">
+    <ul class="flex gap-4">
+      {
+        siteConfig.navigation.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={currentPath === item.href ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
