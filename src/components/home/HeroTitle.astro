@@ -1,0 +1,59 @@
+---
+/**
+ * Large typographic hero title: first name outlined, last name solid.
+ *
+ * The font size is tied to the viewport width so the name fills the row.
+ * On one line the name is about 8.5em wide; stacked, the longer word is
+ * about 4.25em wide. The vw values below are derived from those widths, so
+ * they need retuning if the name, weight or tracking changes.
+ */
+import { siteConfig } from "@/config/site";
+
+export interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+const [firstName, ...rest] = siteConfig.name.split(" ");
+const lastName = rest.join(" ");
+---
+
+<h1 id={id} class="hero-title">
+  <span class="hero-title-outline">{firstName}</span>
+  <span>{lastName}</span>
+</h1>
+
+<style>
+  .hero-title {
+    display: flex;
+    justify-content: center;
+    gap: 0.16em;
+    font-size: clamp(3rem, 10.4vw, 17rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-foreground);
+  }
+
+  /*
+   * Filled with the page colour and painted over the stroke, so only the
+   * outer half of the stroke shows. This hides the overlapping contours a
+   * variable font would otherwise reveal inside the letters.
+   */
+  .hero-title-outline {
+    color: var(--color-background);
+    -webkit-text-stroke: max(2px, 0.03em) var(--color-foreground);
+    paint-order: stroke fill;
+  }
+
+  /* Below this width one line would get too small: stack the two words. */
+  @media (max-width: 36rem) {
+    .hero-title {
+      flex-direction: column;
+      gap: 0;
+      font-size: 20.5vw;
+    }
+  }
+</style>

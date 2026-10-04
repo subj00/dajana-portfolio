@@ -1,0 +1,16 @@
+---
+/**
+ * Home (hero) section. Only the title is designed so far.
+ */
+import Section from "@/components/ui/Section.astro";
+import HeroTitle from "@/components/home/HeroTitle.astro";
+import { sectionIds } from "@/config/site";
+---
+
+<Section
+  id={sectionIds.home}
+  contained={false}
+  class="px-4 pt-[clamp(2.5rem,6vw,6rem)] sm:px-[4%]"
+>
+  <HeroTitle id={`${sectionIds.home}-heading`} />
+</Section>

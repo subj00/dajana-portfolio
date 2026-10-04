@@ -20,9 +20,10 @@ src/
 ├── components/
 │   ├── layout/      Shared structure: BaseHead (SEO), Header, Footer
 │   ├── ui/          Reusable, content-agnostic UI pieces
-│   └── home/ work/ experience/ contact/   Page-specific components
-├── layouts/         BaseLayout.astro — document shell used by every page
-├── pages/           Routes; pages compose components only
+│   ├── ui/          Reusable, content-agnostic UI pieces (Section wrapper, ...)
+│   └── home/ work/ experience/ contact/   One folder per page section
+├── layouts/         BaseLayout.astro — document shell
+├── pages/           index.astro only — composes the section components
 ├── data/            Portfolio content (projects, experience, social links)
 ├── config/site.ts   Global site info and SEO defaults
 ├── styles/          variables.css (design tokens), global.css (base styles)
@@ -30,6 +31,17 @@ src/
 └── types/           TypeScript types for the data
 public/              Files served as-is (favicon)
 ```
+
+## Single-page layout
+
+The site is one page. Home, Work, Experience and Contact are sections of
+`src/pages/index.astro`, not routes. Each lives in its own component
+(`HomeSection.astro`, `WorkSection.astro`, ...) and is wrapped in
+`ui/Section.astro`, which sets the anchor id. The ids are defined once as
+`sectionIds` in `src/config/site.ts`, and the navigation links to them as
+`#pocetna`, `#portfolio`, `#karijera`, `#kontakt`. Smooth scrolling is set in
+`src/styles/global.css`; `ui/Section.astro` applies the `scroll-margin-top`
+that keeps section tops clear of the sticky header.
 
 ## Conventions
 

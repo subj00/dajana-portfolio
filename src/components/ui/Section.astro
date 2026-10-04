@@ -1,0 +1,38 @@
+---
+/**
+ * Page section wrapper. Provides the anchor target used by the navigation
+ * and the shared page container.
+ *
+ * `scroll-mt-scroll-offset` keeps the top of the section clear of the sticky
+ * header when it is reached through an anchor link.
+ */
+import type { SectionId } from "@/config/site";
+
+export interface Props {
+  /** Anchor id — navigation links scroll to `#id`. */
+  id: SectionId;
+  /** Id of the heading inside the section, used as its accessible name. */
+  labelledBy?: string;
+  /** Wrap the content in the page container. Disable for full-width sections. */
+  contained?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  labelledBy = `${id}-heading`,
+  contained = true,
+  class: className,
+} = Astro.props;
+---
+
+<!-- min-h-dvh / py-16 are placeholder spacing until the sections are designed. -->
+<section
+  id={id}
+  aria-labelledby={labelledBy}
+  class:list={["min-h-dvh scroll-mt-scroll-offset py-16", className]}
+>
+  <div class:list={[contained && "container-page"]}>
+    <slot />
+  </div>
+</section>

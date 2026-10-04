@@ -4,9 +4,23 @@
  * All values are placeholders until the real content is provided.
  */
 
+/**
+ * Anchor ids of the sections on the single page. Section components use
+ * these as their `id`, and the navigation links to them as `#id`.
+ */
+export const sectionIds = {
+  home: "pocetna",
+  work: "portfolio",
+  experience: "karijera",
+  contact: "kontakt",
+} as const;
+
+export type SectionId = (typeof sectionIds)[keyof typeof sectionIds];
+
 export interface NavigationItem {
   label: string;
-  href: string;
+  /** In-page anchor, e.g. "#portfolio". */
+  href: `#${SectionId}`;
 }
 
 export interface SiteConfig {
@@ -15,7 +29,7 @@ export interface SiteConfig {
   name: string;
   professionalTitle: string;
   email: string;
-  /** Default document title. Page titles are rendered as "Page | siteTitle". */
+  /** Document title of the page. */
   siteTitle: string;
   titleSeparator: string;
   description: string;
@@ -48,9 +62,9 @@ export const siteConfig: SiteConfig = {
   },
 
   navigation: [
-    { label: "Home", href: "/" },
-    { label: "Work", href: "/work" },
-    { label: "Experience", href: "/experience" },
-    { label: "Contact", href: "/contact" },
+    { label: "Početna", href: `#${sectionIds.home}` },
+    { label: "Portfolio", href: `#${sectionIds.work}` },
+    { label: "Karijera i obrazovanje", href: `#${sectionIds.experience}` },
+    { label: "Kontakt", href: `#${sectionIds.contact}` },
   ],
 };
