@@ -228,8 +228,15 @@ const words = [
     animation-play-state: running;
   }
 
+  /*
+   * `visibility: hidden` holds until the animation actually starts, then
+   * switches to visible for the whole rise. Without it the accent on the
+   * "Ć", which sticks out above the word's box, pokes into the bottom of
+   * the mask and shows as a small dash while the words are still playing.
+   */
   @keyframes intro-name-in {
     from {
+      visibility: hidden;
       translate: 0 115%;
     }
   }
