@@ -3,6 +3,10 @@
  * Contact section: heading, then the photo beside the list of contact
  * links (stacked on small screens).
  *
+ * Reveal: the heading leads, the photo follows (settling from a slight
+ * zoom inside its frame), then the list's top rule and the rows with a
+ * small stagger.
+ *
  * `min-h-svh`: this is the last section, so it has to be at least a screen
  * tall for anchor links to be able to scroll its heading up to the header.
  */
@@ -21,12 +25,15 @@ import { contactItems } from "@/data/contact";
   class="min-h-svh px-4 pt-(--section-pt) pb-(--section-pt) [--section-pt:clamp(4rem,9vw,8rem)] sm:px-[4%]"
 >
   <div class="container-wide contact-inset">
-    <SectionHeading
-      id={`${sectionIds.contact}-heading`}
-      class="text-center tablet:text-left"
-    >
-      Kontakt
-    </SectionHeading>
+    <!-- Same heading entrance as the career section. -->
+    <div data-reveal style="--reveal-distance: 1.25rem; --reveal-duration: 900ms">
+      <SectionHeading
+        id={`${sectionIds.contact}-heading`}
+        class="text-center tablet:text-left"
+      >
+        Kontakt
+      </SectionHeading>
+    </div>
 
     <div
       class="mt-[clamp(2rem,5vw,4rem)] grid gap-8 md:grid-cols-[min(42%,30rem)_minmax(0,1fr)] md:items-center md:gap-[clamp(2.5rem,6vw,6rem)]"
@@ -36,7 +43,11 @@ import { contactItems } from "@/data/contact";
         (wider and shorter on mobile) and the object position keeps her and
         the desk in view.
       -->
-      <div class="aspect-5/4 overflow-hidden rounded-md md:aspect-4/5">
+      <div
+        class="contact-photo aspect-5/4 overflow-hidden rounded-md md:aspect-4/5"
+        data-reveal
+        style="--reveal-delay: 100ms; --reveal-distance: 1.5rem; --reveal-duration: 1000ms"
+      >
         <Image
           src={contactPhoto}
           alt={`${siteConfig.name} za radnim stolom`}
@@ -46,10 +57,23 @@ import { contactItems } from "@/data/contact";
         />
       </div>
 
-      <ul class="border-t border-border">
+      <!--
+        The list itself only fades (for its top rule); the rows do the
+        moving. Custom properties inherit, so each row sets its own distance
+        back to the default instead of picking up the list's 0.
+      -->
+      <ul
+        class="border-t border-border"
+        data-reveal
+        style="--reveal-distance: 0px; --reveal-delay: 180ms; --reveal-duration: 600ms"
+      >
         {
-          contactItems.map((item) => (
-            <li class="border-b border-border">
+          contactItems.map((item, index) => (
+            <li
+              class="border-b border-border"
+              data-reveal
+              style={`--reveal-distance: var(--reveal-distance-base); --reveal-delay: ${200 + index * 90}ms; --reveal-duration: 700ms`}
+            >
               <ContactItemRow item={item} />
             </li>
           ))
@@ -60,6 +84,21 @@ import { contactItems } from "@/data/contact";
 </Section>
 
 <style>
+  /*
+   * While its frame reveals, the photo eases back from a slight zoom. The
+   * frame clips it, so nothing outside the frame moves.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.reveal-ready) .contact-photo :global(img) {
+      transform: scale(1.06);
+      transition: transform 1600ms var(--ease-out-soft) 100ms;
+    }
+
+    :global(.reveal-ready) .contact-photo[data-revealed] :global(img) {
+      transform: none;
+    }
+  }
+
   /*
    * Same optical inset as the hero intro: the hero name's first letter
    * starts slightly inside its box, so indent by that much to line the
