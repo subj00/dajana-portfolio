@@ -51,15 +51,20 @@ import { sectionIds } from "@/config/site";
 <style>
   .hero {
     /*
-     * The title's font size is tied to the viewport width so the name fills
-     * the row. On one line the name is about 8.5em wide; stacked, the longer
-     * word is about 4.25em wide. The vw values are derived from those
+     * The title's font size is tied to the available width so the name
+     * fills the row. On one line the name is about 8.5em wide; stacked, the
+     * longer word is about 4.25em wide. The values are derived from those
      * widths, so they need retuning if the name, weight or tracking changes.
      *
      * It is a custom property because the portrait is sized and positioned
      * in the same unit.
+     *
+     * On mobile the hero is a size container and the stacked title is sized
+     * from its width (cqw), so the longer word spans the hero from edge to
+     * edge whatever the page padding or scrollbar width.
      */
-    --hero-title-size: 20.5vw;
+    container-type: inline-size;
+    --hero-title-size: calc(100cqw / 4.35);
     --hero-top-space: clamp(2.5rem, 6vw, 6rem);
     /* Space under the side columns on desktop, shared so they line up. */
     --hero-bottom-space: clamp(2rem, 9vh, 5.5rem);
@@ -70,6 +75,7 @@ import { sectionIds } from "@/config/site";
   /* Keep in sync with the stacking breakpoint in HeroTitle.astro. */
   @media (width >= 36rem) {
     .hero {
+      container-type: normal;
       --hero-title-size: clamp(3rem, 10.4vw, 17rem);
 
       /*

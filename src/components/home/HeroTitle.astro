@@ -50,7 +50,17 @@ const lastName = rest.join(" ");
   @media (width < 36rem) {
     .hero-title {
       flex-direction: column;
+      align-items: center;
       gap: 0;
+    }
+
+    /*
+     * The negative letter-spacing is also applied after the last letter,
+     * which makes each line's box end short of its letters. Give that back
+     * so the centred lines are centred on what is actually visible.
+     */
+    .hero-title > span {
+      padding-right: 0.035em;
     }
   }
 </style>
