@@ -11,11 +11,11 @@
  * The animations stay paused until the script adds `intro-play`, so the
  * sequence always starts from its first frame. Timeline, in ms from then:
  *      0 – 1450  words appear one by one, 250 apart
- *   1450 – 1700  the full composition holds
- *   1700 – 2050  words drift outwards and fade
- *   1750 – 2360  name rises into the centre
- *   2360 – 2600  the name holds
- *   2600 – 3100  panel lifts away (INTRO_PLAY_MS in the script)
+ *   1450 – 1500  the full composition holds for a beat
+ *   1500 – 1850  words drift outwards and fade
+ *   1550 – 2160  name rises into the centre
+ *   2160 – 2300  the name holds
+ *   2300 – 2800  panel lifts away (INTRO_PLAY_MS in the script)
  *
  * Only opacity and transforms are animated.
  */
@@ -166,7 +166,7 @@ const words = [
     animation:
       intro-word-in 450ms var(--ease-out-soft) calc(var(--index) * 250ms)
         backwards,
-      intro-word-out 350ms ease-out 1700ms forwards;
+      intro-word-out 350ms ease-out 1500ms forwards;
     animation-play-state: paused;
   }
 
@@ -219,7 +219,7 @@ const words = [
   .intro-name-word {
     display: block;
     animation: intro-name-in 550ms var(--ease-out-soft)
-      calc(1750ms + var(--index, 0) * 60ms) backwards;
+      calc(1550ms + var(--index, 0) * 60ms) backwards;
     animation-play-state: paused;
   }
 
@@ -256,12 +256,12 @@ const words = [
     .intro-word {
       animation:
         intro-fade-in 300ms linear calc(var(--index) * 250ms) backwards,
-        intro-fade-out 300ms linear 1700ms forwards;
+        intro-fade-out 300ms linear 1500ms forwards;
       animation-play-state: paused;
     }
 
     .intro-name-word {
-      animation: intro-fade-in 300ms linear 1850ms backwards;
+      animation: intro-fade-in 300ms linear 1650ms backwards;
       animation-play-state: paused;
     }
 
