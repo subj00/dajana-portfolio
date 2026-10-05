@@ -1,0 +1,278 @@
+---
+/**
+ * Intro shown once per browser session: five marketing words gather like a
+ * moodboard, clear the centre, and resolve into the name; then the whole
+ * panel lifts away to reveal the page, which is already rendered under it.
+ *
+ * The panel only exists visually while <html> has `intro-active`, which the
+ * script in BaseLayout.astro sets (and later removes, along with this
+ * element). Without that script it is never shown.
+ *
+ * The animations stay paused until the script adds `intro-play`, so the
+ * sequence always starts from its first frame. Timeline, in ms from then:
+ *      0 – 1450  words appear one by one, 250 apart
+ *   1450 – 1700  the full composition holds
+ *   1700 – 2050  words drift outwards and fade
+ *   1750 – 2360  name rises into the centre
+ *   2360 – 2600  the name holds
+ *   2600 – 3100  panel lifts away (INTRO_PLAY_MS in the script)
+ *
+ * Only opacity and transforms are animated.
+ */
+import { siteConfig } from "@/config/site";
+
+const [firstName, ...rest] = siteConfig.name.split(" ");
+const lastName = rest.join(" ");
+
+/**
+ * The composition. Positions are percentages of the word area; right-hand
+ * words are anchored from the right so they cannot run off small screens.
+ * `size` multiplies the fluid base size; `enter` is the small offset a word
+ * arrives from and `exit` the direction it drifts away in.
+ */
+const words = [
+  {
+    text: "Ideja",
+    position: "left: 8%; top: 4%",
+    size: 1.7,
+    weight: 300,
+    tracking: "0.32em",
+    rotate: "-4deg",
+    opacity: 0.85,
+    enter: "-10px 8px",
+    exit: "-18px -14px",
+  },
+  {
+    text: "Strategija",
+    position: "right: 2%; top: 20%",
+    size: 2,
+    weight: 800,
+    tracking: "-0.02em",
+    rotate: "2deg",
+    opacity: 1,
+    enter: "12px -6px",
+    exit: "20px -12px",
+  },
+  {
+    text: "Kreativa",
+    position: "left: 22%; top: 42%",
+    size: 2.7,
+    weight: 800,
+    tracking: "0em",
+    rotate: "-1.5deg",
+    opacity: 1,
+    outline: true,
+    enter: "0px 10px",
+    exit: "-6px 10px",
+  },
+  {
+    text: "Analitika",
+    position: "left: 2%; top: 76%",
+    size: 1.25,
+    weight: 500,
+    tracking: "0.26em",
+    rotate: "1.5deg",
+    opacity: 0.65,
+    enter: "-8px -8px",
+    exit: "-18px 14px",
+  },
+  {
+    text: "Mreže",
+    position: "right: 9%; top: 75%",
+    size: 2.2,
+    weight: 700,
+    tracking: "0.04em",
+    rotate: "-3deg",
+    opacity: 0.9,
+    enter: "10px 8px",
+    exit: "18px 16px",
+  },
+];
+---
+
+<div id="intro" class="intro" aria-hidden="true">
+  <div class="intro-words">
+    {
+      words.map((word, index) => (
+        <span
+          class:list={["intro-word", word.outline && "intro-outline"]}
+          style={`${word.position}; --size: ${word.size}; --weight: ${word.weight}; --tracking: ${word.tracking}; --rotate: ${word.rotate}; --opacity: ${word.opacity}; --enter: ${word.enter}; --exit: ${word.exit}; --index: ${index}`}
+        >
+          {word.text}
+        </span>
+      ))
+    }
+  </div>
+
+  <p class="intro-name">
+    <span class="intro-mask"
+      ><span class="intro-name-word intro-outline">{firstName}</span></span
+    >
+    <span class="intro-mask"
+      ><span class="intro-name-word" style="--index: 1">{lastName}</span></span
+    >
+  </p>
+</div>
+
+<style>
+  .intro {
+    display: none;
+  }
+
+  :global(html.intro-active) .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--color-ink);
+    color: var(--color-background);
+    text-transform: uppercase;
+    line-height: 1;
+    transition: transform 500ms cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  /* The exit: the panel lifts away like a curtain. */
+  :global(html.intro-exit) .intro {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  /* Both layers share the centre cell of the grid. */
+  .intro-words,
+  .intro-name {
+    grid-area: 1 / 1;
+  }
+
+  /* ---- The words ---------------------------------------------------- */
+
+  .intro-words {
+    /* Fluid base size: the whole composition scales with the viewport. */
+    --unit: clamp(0.72rem, 3.3vw, 1.2rem);
+
+    position: relative;
+    width: min(88vw, 46rem);
+    height: calc(var(--unit) * 16);
+  }
+
+  .intro-word {
+    position: absolute;
+    font-size: calc(var(--unit) * var(--size));
+    font-weight: var(--weight);
+    letter-spacing: var(--tracking);
+    white-space: nowrap;
+    opacity: var(--opacity);
+    rotate: var(--rotate);
+    animation:
+      intro-word-in 450ms var(--ease-out-soft) calc(var(--index) * 250ms)
+        backwards,
+      intro-word-out 350ms ease-out 1700ms forwards;
+    animation-play-state: paused;
+  }
+
+  /* Same outlined treatment as the first name in the hero. */
+  .intro-outline {
+    color: var(--color-ink);
+    -webkit-text-stroke: max(1.5px, 0.03em) var(--color-background);
+    paint-order: stroke fill;
+  }
+
+  /* Arrive from a few pixels away, settling the last bit of rotation. */
+  @keyframes intro-word-in {
+    from {
+      opacity: 0;
+      translate: var(--enter);
+      scale: 0.97;
+      rotate: calc(var(--rotate) * 1.6);
+    }
+  }
+
+  /* Drift outwards and fade, clearing the centre for the name. */
+  @keyframes intro-word-out {
+    to {
+      opacity: 0;
+      translate: var(--exit);
+    }
+  }
+
+  /* ---- The name ----------------------------------------------------- */
+
+  .intro-name {
+    display: flex;
+    gap: 0.16em;
+    font-size: clamp(2rem, 9.2vw, 5.75rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+  }
+
+  /*
+   * Each word rises from behind a mask. The padding keeps the accent on
+   * the last letter and the outline stroke inside the clipped box.
+   */
+  .intro-mask {
+    display: block;
+    overflow: hidden;
+    padding: 0.2em 0.05em 0.08em;
+  }
+
+  .intro-name-word {
+    display: block;
+    animation: intro-name-in 550ms var(--ease-out-soft)
+      calc(1750ms + var(--index, 0) * 60ms) backwards;
+    animation-play-state: paused;
+  }
+
+  :global(html.intro-play) .intro-word,
+  :global(html.intro-play) .intro-name-word {
+    animation-play-state: running;
+  }
+
+  @keyframes intro-name-in {
+    from {
+      translate: 0 115%;
+    }
+  }
+
+  /* ---- Reduced motion: plain fades, no movement ------------------------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.intro-active) .intro {
+      transition: opacity 300ms linear;
+    }
+
+    :global(html.intro-exit) .intro {
+      transform: none;
+      opacity: 0;
+    }
+
+    .intro-word {
+      animation:
+        intro-fade-in 300ms linear calc(var(--index) * 250ms) backwards,
+        intro-fade-out 300ms linear 1700ms forwards;
+      animation-play-state: paused;
+    }
+
+    .intro-name-word {
+      animation: intro-fade-in 300ms linear 1850ms backwards;
+      animation-play-state: paused;
+    }
+
+    :global(html.intro-play) .intro-word,
+    :global(html.intro-play) .intro-name-word {
+      animation-play-state: running;
+    }
+
+    @keyframes intro-fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+
+    @keyframes intro-fade-out {
+      to {
+        opacity: 0;
+      }
+    }
+  }
+</style>

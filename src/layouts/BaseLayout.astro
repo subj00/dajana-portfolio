@@ -5,6 +5,7 @@
  */
 import BaseHead from "@/components/layout/BaseHead.astro";
 import Header from "@/components/layout/Header.astro";
+import IntroLoader from "@/components/layout/IntroLoader.astro";
 import Footer from "@/components/layout/Footer.astro";
 import { siteConfig } from "@/config/site";
 
@@ -28,16 +29,111 @@ const { title, description, image, noIndex } = Astro.props;
       noIndex={noIndex}
     />
     <!--
+      Intro (markup and styles in components/layout/IntroLoader.astro).
+      Shown once per browser session. Inline and in the head so the class
+      is set before the first paint and the page never flashes first.
+
+      The intro's animation is CSS, but it stays paused until this script
+      adds `intro-play`: a CSS animation's clock starts when the element is
+      styled, which can be well before the browser manages to paint it, and
+      then the first words would already be on screen in the first frame.
+      The script starts the clock once the fonts are in and a frame has
+      actually been painted, lifts the panel a fixed time later, and cleans
+      up afterwards.
+    -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var SEEN_KEY = "intro-seen";
+        // When the panel lifts, counted from the start of the animation.
+        // Keep in sync with the timeline in IntroLoader.astro.
+        var INTRO_PLAY_MS = 2600;
+        // Longest wait for fonts before starting anyway.
+        var FONT_WAIT_MS = 1000;
+        // Never keep visitors waiting longer than this, whatever happens.
+        var INTRO_MAX_MS = 6000;
+        // A little longer than the exit transition in IntroLoader.astro.
+        var EXIT_MS = 600;
+
+        try {
+          if (sessionStorage.getItem(SEEN_KEY)) return;
+          sessionStorage.setItem(SEEN_KEY, "1");
+        } catch (error) {
+          // Storage unavailable: show the intro, it just cannot be remembered.
+        }
+
+        var playing = false;
+        var exiting = false;
+        root.classList.add("intro-active");
+
+        // Keep the page still underneath without touching its layout (no
+        // overflow lock, so no scrollbar or content shift when it ends).
+        var scrollKeys = [" ", "PageDown", "PageUp", "End", "Home", "ArrowDown", "ArrowUp"];
+        function block(event) {
+          if (event.type === "keydown" && scrollKeys.indexOf(event.key) === -1) return;
+          event.preventDefault();
+        }
+        var blocked = ["wheel", "touchmove", "keydown"];
+        blocked.forEach(function (type) {
+          window.addEventListener(type, block, { passive: false });
+        });
+
+        function finish() {
+          blocked.forEach(function (type) {
+            window.removeEventListener(type, block, { passive: false });
+          });
+          var intro = document.getElementById("intro");
+          if (intro) intro.remove();
+          root.classList.remove("intro-active", "intro-play", "intro-exit");
+        }
+
+        function exit() {
+          if (exiting) return;
+          exiting = true;
+          root.classList.add("intro-exit");
+          document.dispatchEvent(new Event("intro:exit"));
+          setTimeout(finish, EXIT_MS);
+        }
+
+        // Start the animation on a painted frame, then lift after it has
+        // played in full.
+        function play() {
+          if (playing) return;
+          playing = true;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              root.classList.add("intro-play");
+              setTimeout(exit, INTRO_PLAY_MS);
+            });
+          });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(play);
+          }
+          setTimeout(play, FONT_WAIT_MS);
+        });
+        setTimeout(exit, INTRO_MAX_MS);
+      })();
+    </script>
+
+    <!--
       Reveal on scroll (styles in global.css). Inline and in the head so
       `reveal-ready` is set before the first paint and marked elements never
       flash. The class and the observer come from the same script, so
       content is only ever hidden when something is in place to show it.
+
+      While the intro is showing, revealing waits until it starts to lift,
+      so the hero's entrance plays as the page comes into view.
     -->
     <script is:inline>
       (function () {
         if (!("IntersectionObserver" in window)) return;
-        document.documentElement.classList.add("reveal-ready");
-        document.addEventListener("DOMContentLoaded", function () {
+        var root = document.documentElement;
+        root.classList.add("reveal-ready");
+
+        function start() {
           var observer = new IntersectionObserver(
             function (entries) {
               entries.forEach(function (entry) {
@@ -51,11 +147,23 @@ const { title, description, image, noIndex } = Astro.props;
           document.querySelectorAll("[data-reveal]").forEach(function (el) {
             observer.observe(el);
           });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          var introShowing =
+            root.classList.contains("intro-active") &&
+            !root.classList.contains("intro-exit");
+          if (introShowing) {
+            document.addEventListener("intro:exit", start, { once: true });
+          } else {
+            start();
+          }
         });
       })();
     </script>
   </head>
   <body>
+    <IntroLoader />
     <Header />
     <main id="main">
       <slot />
