@@ -1,14 +1,73 @@
 ---
 /**
- * Site footer. Structural placeholder only — design comes later.
+ * Site footer: a closing statement rather than a second navigation. Dark,
+ * like the career section, so the page ends on the same tone the intro
+ * opened with.
+ *
+ * Centred on mobile; from `tablet` up left-aligned on the same edges as the
+ * section headings, with the name and disciplines moving to the right of
+ * the statement from `lg`.
+ *
+ * Reveal: one short sequence for the whole footer, started once about a
+ * third of it is on screen: statement, then identity, then the small print.
  */
 import { siteConfig } from "@/config/site";
+import { footer } from "@/data/footer";
 
 const year = new Date().getFullYear();
 ---
 
-<footer>
-  <div class="container-page">
-    <p>&copy; {year} {siteConfig.name}</p>
+<footer class="bg-ink px-4 text-background sm:px-[4%]" data-reveal-group="0.3">
+  <div
+    class="container-wide footer-inset pt-[clamp(3.5rem,7vw,6rem)] pb-8 text-center tablet:text-left"
+  >
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+      <p
+        class="mx-auto max-w-[18ch] text-[clamp(1.75rem,3.8vw,3.25rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance tablet:mx-0"
+        data-reveal
+        style="--reveal-duration: 800ms"
+      >
+        {footer.statement}
+      </p>
+
+      <div
+        class="lg:text-right"
+        data-reveal
+        style="--reveal-delay: 130ms; --reveal-duration: 700ms"
+      >
+        <p class="text-[1.0625rem] font-semibold tracking-[-0.01em]">
+          {siteConfig.name}
+        </p>
+        <p
+          class="mt-2 text-[0.6875rem] font-semibold tracking-[0.14em] text-background/60 uppercase"
+        >
+          {footer.disciplines.join(" • ")}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="mt-[clamp(2.5rem,5vw,4rem)] flex flex-col gap-2 border-t border-background/15 pt-6 text-xs text-background/45 tablet:flex-row tablet:justify-between"
+      data-reveal
+      style="--reveal-delay: 280ms; --reveal-distance: 0.375rem; --reveal-duration: 700ms"
+    >
+      <p>&copy; {year} {siteConfig.name}</p>
+      <p>
+        {footer.credit.label}
+        <span
+          class="font-medium text-background/65 transition-colors duration-300 ease-out-soft hover:text-background"
+          >{footer.credit.author}</span
+        >
+      </p>
+    </div>
   </div>
 </footer>
+
+<style>
+  /* Same optical inset as the section headings. */
+  @media (width >= 36rem) {
+    .footer-inset {
+      padding-left: calc(var(--text-hero-title) * 0.03);
+    }
+  }
+</style>

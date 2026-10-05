@@ -99,6 +99,11 @@
  *   --reveal-x         sideways offset it starts at  (default 0)
  *   --reveal-duration  how long it takes             (default 800ms)
  *
+ * By default each element reveals on its own. To play several as one
+ * sequence, put `data-reveal-group="0.3"` on a common ancestor: they all
+ * start (staggered by their delays) once that share of the ancestor is on
+ * screen.
+ *
  * Only opacity and transform change, so revealing never moves the layout.
  * Put `data-reveal` on a plain wrapper, not on a link or button: the
  * transition here would replace the element's own hover transitions.
