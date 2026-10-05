@@ -58,6 +58,6 @@
   --container-page: 72rem; /* max-w-page */
   --spacing-gutter: 1rem; /* px-gutter */
   --spacing-header: 5rem; /* h-header */
-  /* Header height plus a little breathing room. scroll-mt-scroll-offset */
-  --spacing-scroll-offset: calc(var(--spacing-header) + 0.75rem);
+  /* Header height plus a little breathing room; used by ui/Section.astro. */
+  --spacing-scroll-offset: calc(var(--spacing-header) + 1.5rem);
 }

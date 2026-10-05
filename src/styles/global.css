@@ -20,7 +20,11 @@
   }
 
   body {
-    min-height: 100dvh;
+    /*
+     * svh, not dvh: dvh changes while the mobile browser bar slides away,
+     * which resizes anything built on it in the middle of a scroll.
+     */
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     background-color: var(--color-background);

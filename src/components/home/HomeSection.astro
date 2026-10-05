@@ -108,10 +108,13 @@ import { sectionIds } from "@/config/site";
        * The upper limit keeps the portrait to about 30% of the hero's
        * width, so on tall, narrow windows it cannot crowd the side columns;
        * the hero is then shorter than the viewport instead.
+       *
+       * svh, not dvh: on touch devices dvh changes while the browser bar
+       * slides away, which would resize the hero in the middle of a scroll.
        */
       --hero-portrait-height: clamp(
         18rem,
-        100dvh - var(--spacing-header) - var(--hero-top-space) -
+        100svh - var(--spacing-header) - var(--hero-top-space) -
           var(--hero-title-size) * 0.585,
         var(--hero-title-size) * 5.8
       );

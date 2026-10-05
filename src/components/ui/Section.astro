@@ -3,8 +3,11 @@
  * Page section wrapper. Provides the anchor target used by the navigation
  * and the shared page container.
  *
- * `scroll-mt-scroll-offset` keeps the top of the section clear of the sticky
- * header when it is reached through an anchor link.
+ * The scroll margin keeps the section clear of the sticky header when it is
+ * reached through an anchor link. A section that sets `--section-pt` and
+ * uses it as its top padding (`pt-(--section-pt)`) has that padding taken
+ * off the margin, so the link lands just above the section's content
+ * instead of above its empty top space.
  */
 import type { SectionId } from "@/config/site";
 
@@ -29,7 +32,10 @@ const {
 <section
   id={id}
   aria-labelledby={labelledBy}
-  class:list={["scroll-mt-scroll-offset", className]}
+  class:list={[
+    "scroll-mt-[calc(var(--spacing-scroll-offset)-var(--section-pt,0px))]",
+    className,
+  ]}
 >
   <div class:list={[contained && "container-page"]}>
     <slot />

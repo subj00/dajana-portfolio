@@ -6,8 +6,12 @@ import Section from "@/components/ui/Section.astro";
 import { sectionIds } from "@/config/site";
 ---
 
-<!-- min-h-dvh / py-16 are placeholder spacing until the section is designed. -->
-<Section id={sectionIds.work} class="min-h-dvh py-16">
+<!--
+  min-h-svh / py-16 are placeholder spacing until the section is designed.
+  svh, not dvh: a height that changes as the mobile browser bar shows and
+  hides moves the sections below it while an anchor scroll is in progress.
+-->
+<Section id={sectionIds.work} class="min-h-svh py-16">
   <h2 id={`${sectionIds.work}-heading`}>Portfolio</h2>
   <p>Placeholder — this section will be designed separately.</p>
 </Section>

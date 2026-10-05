@@ -2,6 +2,9 @@
 /**
  * Contact section: heading, then the photo beside the list of contact
  * links (stacked on small screens).
+ *
+ * `min-h-svh`: this is the last section, so it has to be at least a screen
+ * tall for anchor links to be able to scroll its heading up to the header.
  */
 import { Image } from "astro:assets";
 import contactPhoto from "@/assets/images/profile/contact-photo.png";
@@ -15,7 +18,7 @@ import { contactItems } from "@/data/contact";
 <Section
   id={sectionIds.contact}
   contained={false}
-  class="px-4 py-[clamp(4rem,9vw,8rem)] sm:px-[4%]"
+  class="min-h-svh px-4 pt-(--section-pt) pb-(--section-pt) [--section-pt:clamp(4rem,9vw,8rem)] sm:px-[4%]"
 >
   <div class="container-wide contact-inset">
     <SectionHeading
