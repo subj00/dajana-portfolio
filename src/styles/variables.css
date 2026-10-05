@@ -20,6 +20,9 @@
   --color-background-subtle: #eae9e5;
   --color-surface: #fdfdfc; /* raised surfaces, e.g. the header */
 
+  /* Dark sections; their text uses --color-background. */
+  --color-ink: #212121;
+
   /* Text */
   --color-foreground: #111111;
   --color-muted: #666666;

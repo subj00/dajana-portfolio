@@ -1,17 +1,44 @@
 ---
 /**
- * Experience section. Structural placeholder only — design comes later.
+ * "Karijera i obrazovanje" section: a dark, editorial CV with one group per
+ * kind of entry (work, education, awards).
  */
+import CareerGroup from "@/components/experience/CareerGroup.astro";
 import Section from "@/components/ui/Section.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { sectionIds } from "@/config/site";
+import { careerGroups } from "@/data/experience";
 ---
 
-<!--
-  min-h-svh / py-16 are placeholder spacing until the section is designed.
-  svh, not dvh: a height that changes as the mobile browser bar shows and
-  hides moves the sections below it while an anchor scroll is in progress.
--->
-<Section id={sectionIds.experience} class="min-h-svh py-16">
-  <h2 id={`${sectionIds.experience}-heading`}>Karijera i obrazovanje</h2>
-  <p>Placeholder — this section will be designed separately.</p>
+<Section
+  id={sectionIds.experience}
+  contained={false}
+  class="bg-ink px-4 pt-(--section-pt) pb-(--section-pt) text-background [--section-pt:clamp(4rem,9vw,8rem)] sm:px-[4%]"
+>
+  <div class="container-wide career-inset">
+    <SectionHeading
+      id={`${sectionIds.experience}-heading`}
+      class="text-center tablet:text-left"
+    >
+      Karijera i obrazovanje
+    </SectionHeading>
+
+    <div
+      class="mt-[clamp(2rem,4.5vw,3.5rem)] grid gap-y-[clamp(2.5rem,4.5vw,4rem)]"
+    >
+      {careerGroups.map((group) => <CareerGroup group={group} />)}
+    </div>
+  </div>
 </Section>
+
+<style>
+  /*
+   * Same optical inset as the hero intro and the Contact section, so the
+   * heading lines up with the visible first letter of the hero name.
+   */
+  @media (width >= 36rem) {
+    .career-inset {
+      padding-left: calc(var(--text-hero-title) * 0.03);
+    }
+  }
+</style>

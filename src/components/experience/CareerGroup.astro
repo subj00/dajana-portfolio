@@ -1,0 +1,49 @@
+---
+/**
+ * One group of the career section: its title and a divided list of entries
+ * (title and subtitle on the left, period on the right).
+ *
+ * From `md` up the group title sits in a column to the left of the list.
+ * From `lg` up that column is the same width as the Contact section's photo
+ * column, so the lists of both sections start on the same line. Below `md`
+ * there is no room for two columns and the title sits above the list.
+ */
+import type { CareerGroup } from "@/types/experience";
+
+export interface Props {
+  group: CareerGroup;
+}
+
+const { group } = Astro.props;
+---
+
+<section
+  class="grid gap-y-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-x-10 lg:grid-cols-[min(42%,30rem)_minmax(0,1fr)] lg:gap-x-[clamp(2.5rem,6vw,6rem)]"
+>
+  <!-- The top padding lines the title up with the first row's text. -->
+  <h3
+    class="text-[clamp(1.125rem,1.9vw,1.625rem)] leading-snug font-semibold tracking-[0.14em] text-balance uppercase md:pt-5 lg:pt-5.5"
+  >
+    {group.title}
+  </h3>
+
+  <ul class="border-t border-background/15">
+    {
+      group.entries.map((entry) => (
+        <li class="grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6">
+          <div>
+            <p class="text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-semibold tracking-[-0.01em]">
+              {entry.title}
+            </p>
+            <p class="mt-1 text-[0.9375rem] leading-normal text-background/60">
+              {entry.subtitle}
+            </p>
+          </div>
+          <p class="text-[0.9375rem] font-medium whitespace-nowrap text-background/70 tabular-nums tablet:text-right">
+            {entry.period}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

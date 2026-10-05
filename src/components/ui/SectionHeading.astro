@@ -2,6 +2,10 @@
 /**
  * Section heading: the same heavy, tight, uppercase treatment as the hero
  * name, at section scale.
+ *
+ * The size is 2.5rem on phones and grows with the viewport up to 4.5rem;
+ * on the narrowest phones it shrinks a little (down to 2rem) so a long
+ * word such as "OBRAZOVANJE" still fits on one line.
  */
 export interface Props {
   id?: string;
@@ -14,7 +18,7 @@ const { id, class: className } = Astro.props;
 <h2
   id={id}
   class:list={[
-    "text-[clamp(2.5rem,5.5vw,4.5rem)] leading-none font-extrabold tracking-[-0.025em] uppercase",
+    "text-[max(clamp(2rem,10.5vw,2.5rem),min(5.5vw,4.5rem))] leading-none font-extrabold tracking-[-0.025em] uppercase",
     className,
   ]}
 >
