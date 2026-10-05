@@ -16,12 +16,15 @@ import { careerGroups } from "@/data/experience";
   class="bg-ink px-4 pt-(--section-pt) pb-(--section-pt) text-background [--section-pt:clamp(4rem,9vw,8rem)] sm:px-[4%]"
 >
   <div class="container-wide career-inset">
-    <SectionHeading
-      id={`${sectionIds.experience}-heading`}
-      class="text-center tablet:text-left"
-    >
-      Karijera i obrazovanje
-    </SectionHeading>
+    <!-- The heading is the section's anchor: it rises in first, a little slower. -->
+    <div data-reveal style="--reveal-distance: 1.25rem; --reveal-duration: 900ms">
+      <SectionHeading
+        id={`${sectionIds.experience}-heading`}
+        class="text-center tablet:text-left"
+      >
+        Karijera i obrazovanje
+      </SectionHeading>
+    </div>
 
     <div
       class="mt-[clamp(2rem,4.5vw,3.5rem)] grid gap-y-[clamp(2.5rem,4.5vw,4rem)]"

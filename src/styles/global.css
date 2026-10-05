@@ -95,7 +95,8 @@
  *
  * Tune per element with custom properties (inline or from a parent):
  *   --reveal-delay     stagger within a group        (default 0ms)
- *   --reveal-distance  how far it travels            (default 0.75rem/1rem)
+ *   --reveal-distance  how far it rises              (default 0.75rem/1rem)
+ *   --reveal-x         sideways offset it starts at  (default 0)
  *   --reveal-duration  how long it takes             (default 800ms)
  *
  * Only opacity and transform change, so revealing never moves the layout.
@@ -113,7 +114,7 @@
 .reveal-ready [data-reveal] {
   opacity: 0;
   transform: translate3d(
-    0,
+    var(--reveal-x, 0px),
     var(--reveal-distance, var(--reveal-distance-base)),
     0
   );

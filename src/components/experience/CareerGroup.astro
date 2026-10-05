@@ -7,6 +7,11 @@
  * From `lg` up that column is the same width as the Contact section's photo
  * column, so the lists of both sections start on the same line. Below `md`
  * there is no room for two columns and the title sits above the list.
+ *
+ * Reveal: the title leads, then the list's top rule fades in and the rows
+ * rise in with a small stagger. Beside the list the title slides in from
+ * the left; stacked above it (mobile) it rises like everything else, so
+ * nothing moves sideways on narrow screens.
  */
 import type { CareerGroup } from "@/types/experience";
 
@@ -22,15 +27,30 @@ const { group } = Astro.props;
 >
   <!-- The top padding lines the title up with the first row's text. -->
   <h3
-    class="text-[clamp(1.125rem,1.9vw,1.625rem)] leading-snug font-semibold tracking-[0.14em] text-balance uppercase md:pt-5 lg:pt-5.5"
+    class="text-[clamp(1.125rem,1.9vw,1.625rem)] leading-snug font-semibold tracking-[0.14em] text-balance uppercase md:pt-5 md:[--reveal-distance:0px] md:[--reveal-x:-0.875rem] lg:pt-5.5"
+    data-reveal
+    style="--reveal-duration: 700ms"
   >
     {group.title}
   </h3>
 
-  <ul class="border-t border-background/15">
+  <!--
+    The list itself only fades (for its top rule); the rows do the moving.
+    Custom properties inherit, so each row sets its own distance back to
+    the default instead of picking up the list's 0.
+  -->
+  <ul
+    class="border-t border-background/15"
+    data-reveal
+    style="--reveal-distance: 0px; --reveal-delay: 100ms; --reveal-duration: 600ms"
+  >
     {
-      group.entries.map((entry) => (
-        <li class="grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6">
+      group.entries.map((entry, index) => (
+        <li
+          class="grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6"
+          data-reveal
+          style={`--reveal-distance: var(--reveal-distance-base); --reveal-delay: ${120 + index * 80}ms; --reveal-duration: 700ms`}
+        >
           <div>
             <p class="text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-semibold tracking-[-0.01em]">
               {entry.title}
