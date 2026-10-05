@@ -2,6 +2,10 @@
 /**
  * Hero intro block: role, short description and the contact call to action.
  * Centred on mobile, left-aligned from `tablet` up.
+ *
+ * The three parts reveal one after another. `--hero-intro-delay` (set by
+ * the hero) shifts the whole group so it follows the title and portrait
+ * when everything is on screen together.
  */
 import ButtonLink from "@/components/ui/ButtonLink.astro";
 import { siteConfig } from "@/config/site";
@@ -13,15 +17,25 @@ import { hero } from "@/data/hero";
 >
   <p
     class="text-[clamp(1.5rem,2.2vw,2.125rem)] leading-[1.15] font-bold tracking-tight text-balance"
+    data-reveal
+    style="--reveal-delay: var(--hero-intro-delay, 0ms)"
   >
     {siteConfig.professionalTitle}
   </p>
   <p
     class="mx-auto mt-4 max-w-72 text-justify text-[0.9375rem] leading-[1.6] text-muted tablet:mx-0"
+    data-reveal
+    style="--reveal-delay: calc(var(--hero-intro-delay, 0ms) + 90ms)"
   >
     {hero.description}
   </p>
-  <ButtonLink href={hero.cta.href} arrow class="mt-7">
-    {hero.cta.label}
-  </ButtonLink>
+  <div
+    class="mt-7"
+    data-reveal
+    style="--reveal-delay: calc(var(--hero-intro-delay, 0ms) + 180ms)"
+  >
+    <ButtonLink href={hero.cta.href} arrow>
+      {hero.cta.label}
+    </ButtonLink>
+  </div>
 </div>

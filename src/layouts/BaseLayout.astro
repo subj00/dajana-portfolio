@@ -27,6 +27,33 @@ const { title, description, image, noIndex } = Astro.props;
       image={image}
       noIndex={noIndex}
     />
+    <!--
+      Reveal on scroll (styles in global.css). Inline and in the head so
+      `reveal-ready` is set before the first paint and marked elements never
+      flash. The class and the observer come from the same script, so
+      content is only ever hidden when something is in place to show it.
+    -->
+    <script is:inline>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        document.documentElement.classList.add("reveal-ready");
+        document.addEventListener("DOMContentLoaded", function () {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                entry.target.setAttribute("data-revealed", "");
+                observer.unobserve(entry.target);
+              });
+            },
+            { rootMargin: "0px 0px -6% 0px", threshold: 0.01 },
+          );
+          document.querySelectorAll("[data-reveal]").forEach(function (el) {
+            observer.observe(el);
+          });
+        });
+      })();
+    </script>
   </head>
   <body>
     <Header />

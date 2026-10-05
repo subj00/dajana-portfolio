@@ -28,7 +28,7 @@ import { siteConfig } from "@/config/site";
           <li class="max-sm:max-w-24">
             <a
               href={item.href}
-              class="block rounded-sm py-2 text-center text-[0.6875rem] leading-snug font-semibold tracking-[0.04em] text-foreground uppercase transition-opacity hover:opacity-60 sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
+              class="nav-link relative block rounded-sm py-2 text-center text-[0.6875rem] leading-snug font-semibold tracking-[0.04em] text-foreground uppercase sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
             >
               {item.label}
             </a>
@@ -38,3 +38,41 @@ import { siteConfig } from "@/config/site";
     </ul>
   </nav>
 </header>
+
+<style>
+  /*
+   * Hover / keyboard focus: a hairline draws in under the label from the
+   * left and retracts to the right when the pointer leaves.
+   */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    /* Stop short of the letter-spacing that trails the last letter. */
+    right: 0.1em;
+    bottom: 0.25rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 350ms var(--ease-out-soft);
+  }
+
+  @media (hover: hover) {
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after {
+      transition: none;
+    }
+  }
+</style>

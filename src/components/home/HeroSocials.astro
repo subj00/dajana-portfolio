@@ -2,6 +2,9 @@
 /**
  * Hero social links. A centred row on mobile (wrapping if it does not
  * fit); from `tablet` up a right-aligned column of equal-width buttons.
+ *
+ * The buttons reveal one after another; `--hero-socials-delay` (set by the
+ * hero) shifts the group so it follows the intro.
  */
 import SocialButton from "@/components/ui/SocialButton.astro";
 import { socialLinks } from "@/data/socialLinks";
@@ -11,8 +14,12 @@ import { socialLinks } from "@/data/socialLinks";
   class="flex flex-wrap justify-center gap-2.5 tablet:ml-auto tablet:w-fit tablet:flex-col tablet:justify-start"
 >
   {
-    socialLinks.map((link) => (
-      <li class="tablet:grid">
+    socialLinks.map((link, index) => (
+      <li
+        class="tablet:grid"
+        data-reveal
+        style={`--reveal-delay: calc(var(--hero-socials-delay, 0ms) + ${index * 80}ms)`}
+      >
         <SocialButton link={link} />
       </li>
     ))

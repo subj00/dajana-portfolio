@@ -51,6 +51,9 @@
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
 
+  /* Motion: a soft deceleration used by reveals and hover transitions. */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
   /*
    * Breakpoints. `tablet:` sits below Tailwind's `sm` and marks where the
    * hero leaves its single-column mobile layout.

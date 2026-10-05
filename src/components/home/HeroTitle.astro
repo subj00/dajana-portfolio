@@ -16,9 +16,18 @@ const [firstName, ...rest] = siteConfig.name.split(" ");
 const lastName = rest.join(" ");
 ---
 
+<!-- The two words rise in one after the other; the distance scales with the type. -->
 <h1 id={id} class="hero-title">
-  <span class="hero-title-outline">{firstName}</span>
-  <span>{lastName}</span>
+  <span
+    class="hero-title-outline"
+    data-reveal
+    style="--reveal-distance: 0.14em; --reveal-duration: 900ms">{firstName}</span
+  >
+  <span
+    data-reveal
+    style="--reveal-distance: 0.14em; --reveal-duration: 900ms; --reveal-delay: 90ms"
+    >{lastName}</span
+  >
 </h1>
 
 <style>

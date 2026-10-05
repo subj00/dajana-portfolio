@@ -19,14 +19,14 @@ const { href, arrow = false, class: className } = Astro.props;
 <a
   href={href}
   class:list={[
-    "group inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium whitespace-nowrap text-accent-foreground transition-colors hover:bg-accent/85",
+    "group inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium whitespace-nowrap text-accent-foreground transition duration-300 ease-out-soft hover:-translate-y-0.5 hover:bg-accent/85 active:translate-y-0 motion-reduce:transition-colors motion-reduce:hover:translate-y-0",
     className,
   ]}
 >
   <slot />
   {
     arrow && (
-      <ArrowIcon class="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" />
+      <ArrowIcon class="size-3.5 transition-transform duration-300 ease-out-soft group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none" />
     )
   }
 </a>

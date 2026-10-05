@@ -36,7 +36,12 @@ import { sectionIds } from "@/config/site";
       >
         <HeroIntro />
       </div>
-      <div class="tablet:col-span-2 tablet:row-start-1 lg:col-span-1 lg:col-start-2">
+      <!-- The portrait follows the title in: a little slower and further. -->
+      <div
+        class="tablet:col-span-2 tablet:row-start-1 lg:col-span-1 lg:col-start-2"
+        data-reveal
+        style="--reveal-delay: 160ms; --reveal-distance: 1.5rem; --reveal-duration: 1000ms"
+      >
         <HeroPortrait />
       </div>
       <div
@@ -75,6 +80,15 @@ import { sectionIds } from "@/config/site";
   /* Keep in sync with the stacking breakpoint in HeroTitle.astro. */
   @media (width >= 36rem) {
     .hero {
+      /*
+       * Entrance order when the hero is on screen as a whole: title, then
+       * portrait, then the intro, then the social links. On mobile these
+       * two groups are further down the page and reveal as they scroll
+       * into view, so they get no extra delay there.
+       */
+      --hero-intro-delay: 300ms;
+      --hero-socials-delay: 480ms;
+
       container-type: normal;
       --hero-title-size: var(--text-hero-title);
 
