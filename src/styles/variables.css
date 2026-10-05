@@ -36,6 +36,13 @@
     sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
+  /*
+   * Font size of the one-line hero name. Tied to the viewport width so the
+   * name (about 8.5em wide) fills the row; retune if the name, weight or
+   * tracking changes. The wide page container is derived from it.
+   */
+  --text-hero-title: clamp(3rem, 10.4vw, 17rem);
+
   /* Border radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;

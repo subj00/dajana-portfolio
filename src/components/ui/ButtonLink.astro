@@ -4,6 +4,8 @@
  * up-right arrow. Renders an anchor, so use it for navigation (including
  * in-page anchors), not for actions.
  */
+import ArrowIcon from "@/components/ui/ArrowIcon.astro";
+
 export interface Props {
   href: string;
   /** Show the up-right arrow after the label. */
@@ -24,18 +26,7 @@ const { href, arrow = false, class: className } = Astro.props;
   <slot />
   {
     arrow && (
-      <svg
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-        class="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
-      >
-        <path d="M4 12 12 4M5.5 4H12v6.5" />
-      </svg>
+      <ArrowIcon class="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" />
     )
   }
 </a>

@@ -47,7 +47,7 @@ export const siteConfig: SiteConfig = {
 
   name: "Dajana Subotić",
   professionalTitle: "Digital Marketing Manager",
-  email: "hello@example.com",
+  email: "dajana.socialstud1o@gmail.com",
 
   siteTitle: "Dajana Subotić — Portfolio",
   titleSeparator: " | ",

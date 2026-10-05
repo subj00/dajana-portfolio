@@ -1,0 +1,24 @@
+---
+/**
+ * Small up-right arrow used as a "go to" indicator on links. Decorative:
+ * hidden from assistive technology. Size and colour come from `class`.
+ */
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 16 16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  class={className}
+>
+  <path d="M4 12 12 4M5.5 4H12v6.5"></path>
+</svg>

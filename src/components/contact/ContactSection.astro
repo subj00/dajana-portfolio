@@ -1,13 +1,70 @@
 ---
 /**
- * Contact section. Structural placeholder only — design comes later.
+ * Contact section: heading, then the photo beside the list of contact
+ * links (stacked on small screens).
  */
+import { Image } from "astro:assets";
+import contactPhoto from "@/assets/images/profile/contact-photo.png";
+import ContactItemRow from "@/components/contact/ContactItemRow.astro";
 import Section from "@/components/ui/Section.astro";
-import { sectionIds } from "@/config/site";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { sectionIds, siteConfig } from "@/config/site";
+import { contactItems } from "@/data/contact";
 ---
 
-<!-- min-h-dvh / py-16 are placeholder spacing until the section is designed. -->
-<Section id={sectionIds.contact} class="min-h-dvh py-16">
-  <h2 id={`${sectionIds.contact}-heading`}>Kontakt</h2>
-  <p>Placeholder — this section will be designed separately.</p>
+<Section
+  id={sectionIds.contact}
+  contained={false}
+  class="px-4 py-[clamp(4rem,9vw,8rem)] sm:px-[4%]"
+>
+  <div class="container-wide contact-inset">
+    <SectionHeading
+      id={`${sectionIds.contact}-heading`}
+      class="text-center tablet:text-left"
+    >
+      Kontakt
+    </SectionHeading>
+
+    <div
+      class="mt-[clamp(2rem,5vw,4rem)] grid gap-8 md:grid-cols-[min(42%,30rem)_minmax(0,1fr)] md:items-center md:gap-[clamp(2.5rem,6vw,6rem)]"
+    >
+      <!--
+        The photo is a tall 9:16 shot; the frame crops it to a calmer shape
+        (wider and shorter on mobile) and the object position keeps her and
+        the desk in view.
+      -->
+      <div class="aspect-5/4 overflow-hidden rounded-md md:aspect-4/5">
+        <Image
+          src={contactPhoto}
+          alt={`${siteConfig.name} za radnim stolom`}
+          widths={[480, 720, 960, contactPhoto.width]}
+          sizes="(min-width: 48rem) min(40vw, 30rem), 100vw"
+          class="size-full object-cover object-[50%_57%] md:object-[50%_55%]"
+        />
+      </div>
+
+      <ul class="border-t border-border">
+        {
+          contactItems.map((item) => (
+            <li class="border-b border-border">
+              <ContactItemRow item={item} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
 </Section>
+
+<style>
+  /*
+   * Same optical inset as the hero intro: the hero name's first letter
+   * starts slightly inside its box, so indent by that much to line the
+   * heading up with the visible letter.
+   */
+  @media (width >= 36rem) {
+    .contact-inset {
+      padding-left: calc(var(--text-hero-title) * 0.03);
+    }
+  }
+</style>

@@ -63,3 +63,19 @@
   margin-inline: auto;
   padding-inline: var(--spacing-gutter);
 }
+
+/*
+ * Wide container that shares its left and right edges with the hero name:
+ * from `tablet` up it is exactly as wide as the one-line name (8.525em of
+ * its font size) and centred; below that it fills the padded page width,
+ * as the stacked name does. Use inside a section with the hero's page
+ * padding (`px-4 sm:px-[4%]`).
+ */
+@utility container-wide {
+  width: 100%;
+  margin-inline: auto;
+
+  @media (width >= 36rem) {
+    max-width: calc(var(--text-hero-title) * 8.525);
+  }
+}
