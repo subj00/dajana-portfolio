@@ -1,0 +1,63 @@
+---
+/**
+ * Hero portrait: a transparent cut-out that sits in front of the hero title
+ * and runs down to the bottom edge of the section.
+ *
+ * The source PNG has wide transparent margins around the figure. The wrapper
+ * takes the shape of the figure alone and the image is positioned inside it,
+ * so sizing and centring refer to the person rather than to the empty canvas.
+ * Nothing of the figure is cropped.
+ */
+import { Image } from "astro:assets";
+import profilePhoto from "@/assets/images/profile/profile-photo.png";
+import { siteConfig } from "@/config/site";
+
+/**
+ * Bounding box of the figure inside the source image, in source pixels.
+ * Update these if profile-photo.png is replaced.
+ */
+const figure = { left: 603, top: 496, width: 662, height: 1504 };
+
+const percent = (value: number) => `${(value * 100).toFixed(2)}%`;
+
+/** Width of the whole image relative to the height of the figure. */
+const imageToFigureHeight = profilePhoto.width / figure.height;
+---
+
+<div
+  class="hero-portrait"
+  style={{ aspectRatio: `${figure.width} / ${figure.height}` }}
+>
+  <Image
+    src={profilePhoto}
+    alt={`Portret – ${siteConfig.name}`}
+    widths={[640, 960, 1280, 1600, profilePhoto.width]}
+    sizes={`${Math.round(imageToFigureHeight * 62)}vh`}
+    loading="eager"
+    fetchpriority="high"
+    class="absolute max-w-none object-contain"
+    style={{
+      width: percent(profilePhoto.width / figure.width),
+      left: percent(-figure.left / figure.width),
+      top: percent(-figure.top / figure.height),
+    }}
+  />
+</div>
+
+<style>
+  .hero-portrait {
+    position: relative;
+    z-index: 10;
+    /* The desktop hero sets the height so that it fills the viewport. */
+    height: var(--hero-portrait-height, clamp(18rem, 62vh, 50rem));
+    /*
+     * Pull the portrait up over the title so the head covers roughly the
+     * lower third of the letters: the title's line box ends 0.11em below
+     * the baseline, and a third of the cap height is another 0.25em.
+     */
+    margin: calc(var(--hero-title-size) * -0.365) auto 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>

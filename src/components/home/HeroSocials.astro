@@ -1,0 +1,20 @@
+---
+/**
+ * Hero social links. A centred row on mobile (wrapping if it does not
+ * fit); from `tablet` up a right-aligned column of equal-width buttons.
+ */
+import SocialButton from "@/components/ui/SocialButton.astro";
+import { socialLinks } from "@/data/socialLinks";
+---
+
+<ul
+  class="flex flex-wrap justify-center gap-2.5 tablet:ml-auto tablet:w-fit tablet:flex-col tablet:justify-start"
+>
+  {
+    socialLinks.map((link) => (
+      <li class="tablet:grid">
+        <SocialButton link={link} />
+      </li>
+    ))
+  }
+</ul>

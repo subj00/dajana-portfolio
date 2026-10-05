@@ -1,0 +1,27 @@
+---
+/**
+ * Hero intro block: role, short description and the contact call to action.
+ * Centred on mobile, left-aligned from `tablet` up.
+ */
+import ButtonLink from "@/components/ui/ButtonLink.astro";
+import { siteConfig } from "@/config/site";
+import { hero } from "@/data/hero";
+---
+
+<div
+  class="mx-auto max-w-md text-center tablet:mx-0 tablet:text-left lg:max-w-88"
+>
+  <p
+    class="text-[clamp(1.5rem,2.2vw,2.125rem)] leading-[1.15] font-bold tracking-tight text-balance"
+  >
+    {siteConfig.professionalTitle}
+  </p>
+  <p
+    class="mx-auto mt-4 max-w-72 text-justify text-[0.9375rem] leading-[1.6] text-muted tablet:mx-0"
+  >
+    {hero.description}
+  </p>
+  <ButtonLink href={hero.cta.href} arrow class="mt-7">
+    {hero.cta.label}
+  </ButtonLink>
+</div>

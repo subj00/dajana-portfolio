@@ -46,7 +46,7 @@ export const siteConfig: SiteConfig = {
   url: "https://example.com",
 
   name: "Dajana Subotić",
-  professionalTitle: "Developer",
+  professionalTitle: "Digital Marketing Manager",
   email: "hello@example.com",
 
   siteTitle: "Dajana Subotić — Portfolio",

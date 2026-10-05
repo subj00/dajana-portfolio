@@ -1,0 +1,41 @@
+---
+/**
+ * Pill-shaped link styled as the primary button, with an optional
+ * up-right arrow. Renders an anchor, so use it for navigation (including
+ * in-page anchors), not for actions.
+ */
+export interface Props {
+  href: string;
+  /** Show the up-right arrow after the label. */
+  arrow?: boolean;
+  class?: string;
+}
+
+const { href, arrow = false, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "group inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium whitespace-nowrap text-accent-foreground transition-colors hover:bg-accent/85",
+    className,
+  ]}
+>
+  <slot />
+  {
+    arrow && (
+      <svg
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        class="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
+      >
+        <path d="M4 12 12 4M5.5 4H12v6.5" />
+      </svg>
+    )
+  }
+</a>

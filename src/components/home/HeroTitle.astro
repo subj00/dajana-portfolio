@@ -2,10 +2,8 @@
 /**
  * Large typographic hero title: first name outlined, last name solid.
  *
- * The font size is tied to the viewport width so the name fills the row.
- * On one line the name is about 8.5em wide; stacked, the longer word is
- * about 4.25em wide. The vw values below are derived from those widths, so
- * they need retuning if the name, weight or tracking changes.
+ * The font size comes from `--hero-title-size`, set by the hero wrapper in
+ * HomeSection.astro.
  */
 import { siteConfig } from "@/config/site";
 
@@ -28,7 +26,7 @@ const lastName = rest.join(" ");
     display: flex;
     justify-content: center;
     gap: 0.16em;
-    font-size: clamp(3rem, 10.4vw, 17rem);
+    font-size: var(--hero-title-size);
     font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.035em;
@@ -49,11 +47,10 @@ const lastName = rest.join(" ");
   }
 
   /* Below this width one line would get too small: stack the two words. */
-  @media (max-width: 36rem) {
+  @media (width < 36rem) {
     .hero-title {
       flex-direction: column;
       gap: 0;
-      font-size: 20.5vw;
     }
   }
 </style>

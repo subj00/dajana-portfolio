@@ -1,16 +1,114 @@
 ---
 /**
- * Home (hero) section. Only the title is designed so far.
+ * Home (hero) section: the large name with the portrait in front of it,
+ * plus the intro block and the social links.
+ *
+ * Three layouts, switching at the `tablet` (36rem) and `lg` breakpoints:
+ *   - mobile:  title stacked; portrait, intro and social links in one
+ *              centred column.
+ *   - tablet:  portrait under the title; below it the intro on the left and
+ *              the social links stacked on the right, vertically centred
+ *              against the intro.
+ *   - desktop: intro / portrait / social links side by side, with the whole
+ *              hero sized to fill the viewport under the header.
  */
 import Section from "@/components/ui/Section.astro";
 import HeroTitle from "@/components/home/HeroTitle.astro";
+import HeroPortrait from "@/components/home/HeroPortrait.astro";
+import HeroIntro from "@/components/home/HeroIntro.astro";
+import HeroSocials from "@/components/home/HeroSocials.astro";
 import { sectionIds } from "@/config/site";
 ---
 
-<Section
-  id={sectionIds.home}
-  contained={false}
-  class="px-4 pt-[clamp(2.5rem,6vw,6rem)] sm:px-[4%]"
->
-  <HeroTitle id={`${sectionIds.home}-heading`} />
+<Section id={sectionIds.home} contained={false} class="relative px-4 sm:px-[4%]">
+  <div class="hero">
+    <HeroTitle id={`${sectionIds.home}-heading`} />
+    <!--
+      `w-0 min-w-full` keeps this grid out of the hero's width calculation,
+      so the hero is exactly as wide as the title and the side blocks share
+      the title's left and right edges.
+    -->
+    <div
+      class="grid w-0 min-w-full tablet:grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr]"
+    >
+      <div
+        class="hero-inset relative z-20 order-1 border-t border-border pt-10 pb-6 tablet:order-none tablet:col-start-1 tablet:row-start-2 tablet:pr-8 tablet:pb-12 lg:row-start-1 lg:self-end lg:border-0 lg:pt-4 lg:pb-(--hero-bottom-space)"
+      >
+        <HeroIntro />
+      </div>
+      <div class="tablet:col-span-2 tablet:row-start-1 lg:col-span-1 lg:col-start-2">
+        <HeroPortrait />
+      </div>
+      <div
+        class="relative z-20 order-2 pb-12 tablet:order-none tablet:col-start-2 tablet:row-start-2 tablet:flex tablet:items-center tablet:border-t tablet:border-border tablet:pt-10 lg:col-start-3 lg:row-start-1 lg:self-end lg:border-0 lg:pt-4 lg:pb-(--hero-bottom-space)"
+      >
+        <HeroSocials />
+      </div>
+    </div>
+  </div>
 </Section>
+
+<style>
+  .hero {
+    /*
+     * The title's font size is tied to the viewport width so the name fills
+     * the row. On one line the name is about 8.5em wide; stacked, the longer
+     * word is about 4.25em wide. The vw values are derived from those
+     * widths, so they need retuning if the name, weight or tracking changes.
+     *
+     * It is a custom property because the portrait is sized and positioned
+     * in the same unit.
+     */
+    --hero-title-size: 20.5vw;
+    --hero-top-space: clamp(2.5rem, 6vw, 6rem);
+    /* Space under the side columns on desktop, shared so they line up. */
+    --hero-bottom-space: clamp(2rem, 9vh, 5.5rem);
+
+    padding-top: var(--hero-top-space);
+  }
+
+  /* Keep in sync with the stacking breakpoint in HeroTitle.astro. */
+  @media (width >= 36rem) {
+    .hero {
+      --hero-title-size: clamp(3rem, 10.4vw, 17rem);
+
+      /*
+       * Shrink the hero to the width of the one-line title and centre it,
+       * so everything below shares the title's left and right edges.
+       */
+      width: fit-content;
+      margin-inline: auto;
+    }
+
+    /*
+     * The first letter's outline starts slightly inside the title box (the
+     * glyph's side bearing, less the outer half of the stroke). Indent the
+     * intro by the same amount so its left edge lines up with the visible
+     * letter.
+     */
+    .hero-inset {
+      padding-left: calc(var(--hero-title-size) * 0.03);
+    }
+  }
+
+  @media (width >= 64rem) {
+    .hero {
+      /*
+       * Make the hero end exactly at the bottom of the viewport. Everything
+       * above the portrait has a known height: the header, the top space
+       * and the one-line title (0.95em), less the 0.365em the portrait is
+       * pulled up over the title. The portrait takes what is left.
+       *
+       * The upper limit keeps the portrait to about 30% of the hero's
+       * width, so on tall, narrow windows it cannot crowd the side columns;
+       * the hero is then shorter than the viewport instead.
+       */
+      --hero-portrait-height: clamp(
+        18rem,
+        100dvh - var(--spacing-header) - var(--hero-top-space) -
+          var(--hero-title-size) * 0.585,
+        var(--hero-title-size) * 5.8
+      );
+    }
+  }
+</style>

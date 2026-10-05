@@ -26,11 +26,10 @@ const {
 } = Astro.props;
 ---
 
-<!-- min-h-dvh / py-16 are placeholder spacing until the sections are designed. -->
 <section
   id={id}
   aria-labelledby={labelledBy}
-  class:list={["min-h-dvh scroll-mt-scroll-offset py-16", className]}
+  class:list={["scroll-mt-scroll-offset", className]}
 >
   <div class:list={[contained && "container-page"]}>
     <slot />

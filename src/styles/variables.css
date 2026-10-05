@@ -41,6 +41,12 @@
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
 
+  /*
+   * Breakpoints. `tablet:` sits below Tailwind's `sm` and marks where the
+   * hero leaves its single-column mobile layout.
+   */
+  --breakpoint-tablet: 36rem;
+
   /* Layout */
   --container-page: 72rem; /* max-w-page */
   --spacing-gutter: 1rem; /* px-gutter */
