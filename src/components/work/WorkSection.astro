@@ -1,17 +1,60 @@
 ---
 /**
- * Work section. Structural placeholder only — design comes later.
+ * Portfolio section: heading and a grid of project cards.
+ *
+ * Two cards per row once each can be a comfortable width (from 56rem);
+ * below that, one per row.
  */
+import ProjectCard from "@/components/work/ProjectCard.astro";
 import Section from "@/components/ui/Section.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { sectionIds } from "@/config/site";
+import { projects } from "@/data/projects";
 ---
 
-<!--
-  min-h-svh / py-16 are placeholder spacing until the section is designed.
-  svh, not dvh: a height that changes as the mobile browser bar shows and
-  hides moves the sections below it while an anchor scroll is in progress.
--->
-<Section id={sectionIds.work} class="min-h-svh py-16">
-  <h2 id={`${sectionIds.work}-heading`}>Portfolio</h2>
-  <p>Placeholder — this section will be designed separately.</p>
+<Section
+  id={sectionIds.work}
+  contained={false}
+  class="px-4 pt-(--section-pt) pb-(--section-pt) [--section-pt:clamp(4rem,9vw,8rem)] sm:px-[4%]"
+>
+  <div class="container-wide work-inset">
+    <!-- Same heading entrance as the other sections. -->
+    <div data-reveal style="--reveal-distance: 1.25rem; --reveal-duration: 900ms">
+      <SectionHeading
+        id={`${sectionIds.work}-heading`}
+        class="text-center tablet:text-left"
+      >
+        Portfolio
+      </SectionHeading>
+    </div>
+
+    <!--
+      Each card reveals as it scrolls into view; the right-hand card of a
+      row follows its neighbour by a beat. The reveal sits on the list item
+      so it does not interfere with the card's own hover transition.
+    -->
+    <ul
+      class="mt-[clamp(2rem,5vw,4rem)] grid gap-6 min-[56rem]:grid-cols-2 min-[56rem]:gap-8 xl:gap-10"
+    >
+      {
+        projects.map((project, index) => (
+          <li
+            data-reveal
+            style={`--reveal-delay: ${(index % 2) * 110}ms; --reveal-distance: 1.25rem`}
+          >
+            <ProjectCard project={project} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </Section>
+
+<style>
+  /* Same optical inset as the other section headings. */
+  @media (width >= 36rem) {
+    .work-inset {
+      padding-left: calc(var(--text-hero-title) * 0.03);
+    }
+  }
+</style>

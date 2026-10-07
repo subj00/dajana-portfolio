@@ -1,22 +1,17 @@
 import type { ImageMetadata } from "astro";
 
-export interface ProjectLink {
-  label: string;
-  url: string;
-}
-
+/** One card of the Portfolio section. */
 export interface Project {
-  /** Unique, URL-safe identifier, e.g. "weather-dashboard". */
+  /** Unique, URL-safe identifier, e.g. "social-stud1o". */
   slug: string;
   title: string;
-  summary: string;
-  description?: string;
-  /** Technologies used, e.g. ["Astro", "TypeScript"]. */
-  technologies: string[];
-  /** Imported from src/assets/images/projects so Astro can optimize it. */
-  image?: ImageMetadata;
-  imageAlt?: string;
-  links?: ProjectLink[];
-  year?: number;
-  featured?: boolean;
+  description: string;
+  /** Imported from src/assets so Astro can optimize it. */
+  image: ImageMetadata;
+  imageAlt: string;
+  /**
+   * Which part of the image to keep when it is cropped to the card's frame,
+   * as a CSS object-position value. Defaults to the centre.
+   */
+  imagePosition?: string;
 }
