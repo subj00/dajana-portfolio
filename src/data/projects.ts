@@ -1,7 +1,7 @@
 import novaSImage from '@/assets/images/profile/novas.jpg';
 import socialStudioImage from '@/assets/images/profile/socialstudio.jpg';
 import survivorImage from '@/assets/images/profile/survivor.jpg';
-import tvShowImage from '@/assets/images/profile/tvshow.png';
+import tvShowImage from '@/assets/images/profile/tvshow.jpg';
 import type { Project } from '@/types/project';
 
 /** Portfolio cards, in display order. */
