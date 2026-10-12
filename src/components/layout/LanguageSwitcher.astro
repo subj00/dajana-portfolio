@@ -1,15 +1,19 @@
 ---
 /**
- * "SR / EN" language switcher, in the navigation's type style.
+ * Language switcher, in the navigation's type style. Two presentations of
+ * the same two links:
  *
- * Each option is a real link to that language's page, so it works without
- * JavaScript; with it, the script in BaseLayout.astro intercepts the click
- * and switches in place. Which option looks active is decided in CSS from
- * <html lang>, so it is always in step with the language shown.
+ *   - from `md` up: "SR / EN" side by side;
+ *   - below `md`:   the current language and a small chevron ("SR ⌄"),
+ *                   which opens a compact menu with both options. The menu
+ *                   overlays the page, so the header keeps its height.
  *
- * Under 23.4375rem (375px) the two options stack, without the slash, to save
- * width in the phone header.
+ * Every option is a real link to that language's page; the script in
+ * BaseLayout.astro intercepts the click and switches in place. Which
+ * option looks active is decided in CSS from <html lang>, so it is always
+ * in step with the language shown.
  */
+import Localized from "@/components/ui/Localized.astro";
 import {
   langPath,
   languageNames,
@@ -19,27 +23,23 @@ import {
   tr,
 } from "@/i18n";
 
-export interface Props {
-  class?: string;
-}
-
-const { class: className } = Astro.props;
 const pageLang = toLang(Astro.currentLocale);
+const label = tr((d) => d.language.label);
+/** The language codes as shown on the button; uppercased in CSS. */
+const codes = { sr: "sr", en: "en" };
 ---
 
+<!-- md and up: SR / EN -->
 <div
   role="group"
-  {...localizedAttr("aria-label", tr((d) => d.language.label), pageLang)}
-  class:list={[
-    "flex flex-col items-center text-[0.65625rem] tracking-[0.04em] uppercase min-[22.5rem]:text-[0.6875rem] min-[23.4375rem]:flex-row sm:text-xs sm:tracking-[0.1em] lg:text-[0.8125rem] lg:tracking-[0.12em]",
-    className,
-  ]}
+  {...localizedAttr("aria-label", label, pageLang)}
+  class="hidden items-center text-xs tracking-[0.1em] uppercase md:flex lg:text-[0.8125rem] lg:tracking-[0.12em]"
 >
   {
     languages.map((lang, index) => (
       <>
         {index > 0 && (
-          <span class="hidden text-muted/60 min-[23.4375rem]:inline" aria-hidden="true">
+          <span class="text-muted/60" aria-hidden="true">
             /
           </span>
         )}
@@ -50,7 +50,7 @@ const pageLang = toLang(Astro.currentLocale);
           data-lang-switch={lang}
           aria-label={languageNames[lang]}
           aria-current={lang === pageLang ? "true" : undefined}
-          class="lang-option rounded-sm px-1 py-1 min-[23.4375rem]:py-2 md:px-1.5"
+          class="lang-option rounded-sm px-1.5 py-1"
         >
           {lang}
         </a>
@@ -58,6 +58,114 @@ const pageLang = toLang(Astro.currentLocale);
     ))
   }
 </div>
+
+<!-- Below md: current language + chevron, opening a small menu -->
+<div class="lang-menu relative md:hidden" data-lang-menu>
+  <button
+    type="button"
+    aria-expanded="false"
+    aria-controls="lang-menu-list"
+    data-lang-menu-toggle
+    class="lang-menu-toggle relative inline-flex items-center gap-0.5 rounded-sm py-2.5 pl-1 text-[0.65625rem] font-semibold tracking-[0.02em] text-foreground uppercase min-[22.5rem]:text-[0.6875rem] min-[22.5rem]:tracking-[0.03em] sm:text-xs sm:tracking-[0.1em]"
+  >
+    <span class="sr-only"><Localized text={label} />:</span>
+    <Localized text={codes} />
+    <svg
+      viewBox="0 0 10 10"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      class="lang-menu-chevron size-2.5"
+    >
+      <path d="M2 3.75 5 6.75 8 3.75"></path>
+    </svg>
+  </button>
+
+  <ul
+    id="lang-menu-list"
+    class="lang-menu-list absolute top-full right-0 z-50 mt-1 min-w-16 overflow-hidden rounded-md border border-border bg-surface py-1 shadow-card"
+  >
+    {
+      languages.map((lang) => (
+        <li>
+          <a
+            href={langPath(lang)}
+            hreflang={lang}
+            lang={lang}
+            data-lang-switch={lang}
+            aria-label={languageNames[lang]}
+            aria-current={lang === pageLang ? "true" : undefined}
+            class="lang-option block px-4 py-2.5 text-center text-[0.6875rem] tracking-[0.1em] uppercase sm:text-xs"
+          >
+            {lang}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<!--
+  Opens and closes the mobile menu. Choosing a language is handled by the
+  language script in BaseLayout.astro; here the menu only closes after it.
+-->
+<script is:inline>
+  (function () {
+    var menu = document.querySelector("[data-lang-menu]");
+    if (!menu) return;
+    var toggle = menu.querySelector("[data-lang-menu-toggle]");
+    var options = menu.querySelectorAll("[data-lang-switch]");
+
+    function isOpen() {
+      return menu.hasAttribute("data-open");
+    }
+
+    function setOpen(open) {
+      menu.toggleAttribute("data-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function focusOption(index) {
+      var count = options.length;
+      options[((index % count) + count) % count].focus();
+    }
+
+    toggle.addEventListener("click", function () {
+      setOpen(!isOpen());
+    });
+
+    // Outside clicks close it; so does picking an option.
+    document.addEventListener("click", function (event) {
+      if (!isOpen()) return;
+      var inside = menu.contains(event.target);
+      var picked = inside && event.target.closest("[data-lang-switch]");
+      if (!inside || picked) setOpen(false);
+      if (picked) toggle.focus();
+    });
+
+    menu.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+        return;
+      }
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+      event.preventDefault();
+      if (!isOpen()) setOpen(true);
+      var current = Array.prototype.indexOf.call(options, document.activeElement);
+      var step = event.key === "ArrowDown" ? 1 : -1;
+      focusOption(current === -1 ? (step === 1 ? 0 : -1) : current + step);
+    });
+
+    // Tabbing away closes it.
+    menu.addEventListener("focusout", function (event) {
+      if (isOpen() && !menu.contains(event.relatedTarget)) setOpen(false);
+    });
+  })();
+</script>
 
 <style>
   .lang-option {
@@ -82,8 +190,50 @@ const pageLang = toLang(Astro.currentLocale);
     text-underline-offset: 0.35em;
   }
 
+  /* A larger tap area than the text itself, without taking more room. */
+  .lang-menu-toggle::after {
+    content: "";
+    position: absolute;
+    inset: -0.25rem -0.375rem;
+  }
+
+  .lang-menu-chevron {
+    transition: rotate 250ms var(--ease-out-soft);
+  }
+
+  .lang-menu[data-open] .lang-menu-chevron {
+    rotate: 180deg;
+  }
+
+  /*
+   * Closed: invisible and out of the tab order (visibility), but still in
+   * the layout so it can fade and settle in when opened.
+   */
+  .lang-menu-list {
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 -0.25rem;
+    transition:
+      opacity 200ms var(--ease-out-soft),
+      translate 200ms var(--ease-out-soft),
+      visibility 0s 200ms;
+  }
+
+  .lang-menu[data-open] .lang-menu-list {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity 200ms var(--ease-out-soft),
+      translate 200ms var(--ease-out-soft),
+      visibility 0s;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .lang-option {
+    .lang-option,
+    .lang-menu-chevron,
+    .lang-menu-list,
+    .lang-menu[data-open] .lang-menu-list {
       transition: none;
     }
   }

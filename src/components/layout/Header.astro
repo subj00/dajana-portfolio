@@ -9,9 +9,10 @@
  * the flow of the links so they stay centred (on tablets the links make a
  * little room for it on the right).
  *
- * On phones the row is tight: the links use a small gap, a long label
- * wraps onto two lines. Under 23.4375rem (375px) the switcher stacks "SR"
- * over "EN", and under 22.5rem (360px) the type is also half a pixel smaller.
+ * Below `md` the switcher is a compact "SR ⌄" that opens a small menu
+ * (see LanguageSwitcher.astro). On phones the row is tight: the links use
+ * a small gap and a long label wraps onto two lines; under 22.5rem (360px)
+ * the type is half a pixel smaller with almost no letter-spacing.
  */
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher.astro";
 import Localized from "@/components/ui/Localized.astro";
@@ -42,14 +43,14 @@ const pageLang = toLang(Astro.currentLocale);
           <li class="max-sm:max-w-24">
             <a
               href={`#${sectionIds[key]}`}
-              class="nav-link relative block rounded-sm py-2 text-center text-[0.65625rem] leading-snug font-semibold tracking-[0.02em] text-foreground uppercase min-[22.5rem]:text-[0.6875rem] min-[22.5rem]:tracking-[0.03em] sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
+              class="nav-link relative block rounded-sm py-2 text-center text-[0.65625rem] leading-snug font-semibold tracking-[0.01em] text-foreground uppercase min-[22.5rem]:text-[0.6875rem] min-[22.5rem]:tracking-[0.03em] sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
             >
               <Localized text={tr((d) => d.nav[key])} />
             </a>
           </li>
         ))
       }
-      <li class="shrink-0 md:absolute md:inset-y-0 md:right-[4%] md:flex md:items-center">
+      <li class="relative shrink-0 md:absolute md:inset-y-0 md:right-[4%] md:flex md:items-center">
         <LanguageSwitcher />
       </li>
     </ul>
