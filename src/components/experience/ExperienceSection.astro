@@ -1,7 +1,8 @@
 ---
 /**
  * "Karijera i obrazovanje" section: a dark, editorial CV with one group per
- * kind of entry (work, education, awards).
+ * kind of entry (work, education, awards), followed by languages and
+ * skills in the same form.
  */
 import CareerGroup from "@/components/experience/CareerGroup.astro";
 import Localized from "@/components/ui/Localized.astro";
@@ -10,7 +11,16 @@ import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { sectionIds } from "@/config/site";
 import { tr, zip } from "@/i18n";
 
-const careerGroups = zip(tr((d) => d.career.groups));
+const careerGroups = [
+  ...zip(tr((d) => d.career.groups)),
+  tr((d) => d.career.languages),
+];
+
+/** Skills are a flat list of names; give them the shape of a group. */
+const skills = tr((d) => ({
+  title: d.career.skills.title,
+  entries: d.career.skills.items.map((title) => ({ title })),
+}));
 ---
 
 <Section
@@ -33,6 +43,7 @@ const careerGroups = zip(tr((d) => d.career.groups));
       class="mt-[clamp(2rem,4.5vw,3.5rem)] grid gap-y-[clamp(2.5rem,4.5vw,4rem)]"
     >
       {careerGroups.map((group) => <CareerGroup group={group} />)}
+      <CareerGroup group={skills} columns />
     </div>
   </div>
 </Section>

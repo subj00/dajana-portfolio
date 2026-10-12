@@ -1,7 +1,10 @@
 ---
 /**
  * One group of the career section: its title and a divided list of entries
- * (title and subtitle on the left, period on the right).
+ * (title and subtitle on the left, period on the right). Subtitle and
+ * period are optional, so the same rows serve plain lists such as the
+ * languages; with `columns` the rows flow into two columns once the list
+ * is wide enough (used for the skills).
  *
  * From `md` up the group title sits in a column to the left of the list.
  * From `lg` up that column is the same width as the Contact section's photo
@@ -15,17 +18,36 @@
  */
 import Localized from "@/components/ui/Localized.astro";
 import { field, zip, type Localized as LocalizedValue } from "@/i18n";
-import type { Dictionary } from "@/i18n/translations";
+interface CareerEntry {
+  title: string;
+  subtitle?: string;
+  period?: string;
+}
 
-type CareerGroup = Dictionary["career"]["groups"][number];
+interface CareerGroup {
+  title: string;
+  entries: CareerEntry[];
+}
 
 export interface Props {
   /** The group in every language (see ExperienceSection.astro). */
   group: LocalizedValue<CareerGroup>;
+  /** Lay the rows out in two columns where the list is wide enough. */
+  columns?: boolean;
 }
 
-const { group } = Astro.props;
+const { group, columns = false } = Astro.props;
 const entries = zip(field(group, "entries"));
+
+/** An optional field counts only if it is filled in in every language. */
+const optional = (
+  entry: LocalizedValue<CareerEntry>,
+  key: "subtitle" | "period",
+): LocalizedValue<string> | undefined => {
+  const sr = entry.sr[key];
+  const en = entry.en[key];
+  return sr && en ? { sr, en } : undefined;
+};
 ---
 
 <section
@@ -45,31 +67,50 @@ const entries = zip(field(group, "entries"));
     Custom properties inherit, so each row sets its own distance back to
     the default instead of picking up the list's 0.
   -->
-  <ul
-    class="border-t border-background/15"
-    data-reveal
-    style="--reveal-distance: 0px; --reveal-delay: 100ms; --reveal-duration: 600ms"
-  >
-    {
-      entries.map((entry, index) => (
-        <li
-          class="grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6"
-          data-reveal
-          style={`--reveal-distance: var(--reveal-distance-base); --reveal-delay: ${120 + index * 80}ms; --reveal-duration: 700ms`}
-        >
-          <div>
-            <p class="text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-semibold tracking-[-0.01em]">
-              <Localized text={field(entry, "title")} />
-            </p>
-            <p class="mt-1 text-[0.9375rem] leading-normal text-background/60">
-              <Localized text={field(entry, "subtitle")} />
-            </p>
-          </div>
-          <p class="text-[0.9375rem] font-medium whitespace-nowrap text-background/70 tabular-nums tablet:text-right">
-            <Localized text={field(entry, "period")} />
-          </p>
-        </li>
-      ))
-    }
-  </ul>
+  <!-- The wrapper is the size container the two-column layout responds to. -->
+  <div class="@container">
+    <ul
+      class:list={[
+        "border-t border-background/15",
+        columns && "grid @xl:grid-cols-2",
+      ]}
+      data-reveal
+      style="--reveal-distance: 0px; --reveal-delay: 100ms; --reveal-duration: 600ms"
+    >
+      {
+        entries.map((entry, index) => {
+          const subtitle = optional(entry, "subtitle");
+          const period = optional(entry, "period");
+          return (
+            <li
+              class:list={[
+                "grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6",
+                // In two columns the space between them is padding, not a
+                // gap, so the dividing lines run unbroken across the list.
+                columns && "@xl:odd:pr-10",
+              ]}
+              data-reveal
+              style={`--reveal-distance: var(--reveal-distance-base); --reveal-delay: ${120 + Math.min(index, 5) * 80}ms; --reveal-duration: 700ms`}
+            >
+              <div>
+                <p class="text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-semibold tracking-[-0.01em]">
+                  <Localized text={field(entry, "title")} />
+                </p>
+                {subtitle && (
+                  <p class="mt-1 text-[0.9375rem] leading-normal text-background/60">
+                    <Localized text={subtitle} />
+                  </p>
+                )}
+              </div>
+              {period && (
+                <p class="text-[0.9375rem] font-medium whitespace-nowrap text-background/70 tabular-nums tablet:text-right">
+                  <Localized text={period} />
+                </p>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
 </section>

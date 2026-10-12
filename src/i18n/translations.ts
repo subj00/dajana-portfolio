@@ -3,8 +3,9 @@
  *
  * Serbian is the source: the `Dictionary` type is derived from it, so the
  * English dictionary must have exactly the same keys. Lists (career groups
- * and entries, intro words) are matched by position and must have the same
- * length in both languages; the build fails if they do not.
+ * and entries, languages, skills, intro words) are matched by position and
+ * must have the same length in both languages; the build fails if they do
+ * not.
  *
  * Not here on purpose: proper names and values that are the same in every
  * language (the name, email, phone, social handles, URLs). Those live in
@@ -128,6 +129,34 @@ const sr = {
         ],
       },
     ],
+    /** Shown after the groups above. `subtitle` and `period` are optional. */
+    languages: {
+      title: "Jezici",
+      entries: [
+        { title: "Engleski jezik" },
+        { title: "Italijanski jezik" },
+        {
+          title: "Nemački jezik",
+          subtitle: "Goethe-Zertifikat B2",
+          period: "2022. god.",
+        },
+      ],
+    },
+    /** Shown last, as a plain list (two columns where there is room). */
+    skills: {
+      title: "Veštine",
+      items: [
+        "Meta Business Suite",
+        "Ads Manager",
+        "Facebook, Instagram, TikTok, LinkedIn, YouTube",
+        "Strategija sadržaja",
+        "Kreiranje sadržaja",
+        "Pisanje reklamnih i marketinških tekstova",
+        "MS Office",
+        "Canva",
+        "CapCut, Premiere Pro, iMovie",
+      ],
+    },
   },
 
   contact: {
@@ -266,6 +295,32 @@ const en: Dictionary = {
         ],
       },
     ],
+    languages: {
+      title: "Languages",
+      entries: [
+        { title: "English" },
+        { title: "Italian" },
+        {
+          title: "German",
+          subtitle: "Goethe-Zertifikat B2",
+          period: "2022",
+        },
+      ],
+    },
+    skills: {
+      title: "Skills",
+      items: [
+        "Meta Business Suite",
+        "Ads Manager",
+        "Facebook, Instagram, TikTok, LinkedIn, YouTube",
+        "Content Strategy",
+        "Content Production",
+        "Copywriting",
+        "MS Office",
+        "Canva",
+        "CapCut, Premiere Pro, iMovie",
+      ],
+    },
   },
 
   contact: {

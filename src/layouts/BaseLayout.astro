@@ -30,7 +30,8 @@ const lang = toLang(Astro.currentLocale);
         - applies a saved preference before the first paint, so the page
           never flashes in the other language;
         - switches in place when "SR / EN" is clicked, without a page load,
-          and remembers the choice in localStorage;
+          and remembers the choice in localStorage; the text on screen
+          fades out, changes, and fades back in with a slight rise;
         - keeps the address ("/" or "/en/"), the title, the description
           and translated attributes (alt text, labels) in step.
       First inline script on purpose: the intro below shows translated text.
@@ -89,9 +90,7 @@ const lang = toLang(Astro.currentLocale);
           }
         }
 
-        function setLang(next) {
-          if (next === lang || LANGS.indexOf(next) === -1) return;
-
+        function applyLang(next) {
           // Text length differs between languages, so sections change
           // height. Keep whichever section is being read where it is.
           var anchor = null;
@@ -119,6 +118,117 @@ const lang = toLang(Astro.currentLocale);
             var shift = anchor.getBoundingClientRect().top - before;
             if (shift) window.scrollBy({ top: shift, behavior: "instant" });
           }
+        }
+
+        /*
+         * The transition between languages.
+         *
+         * Translated text sits in [data-lang] elements, one per language
+         * (ui/Localized.astro), so no component needs to know about this:
+         * the elements of the language on screen fade out, the language
+         * changes while nothing is showing, and the new ones fade in.
+         * Opacity is animated on the text itself. The few pixels of
+         * movement are animated on its parent, because inline text cannot
+         * be moved with a transform, and only where that parent is plain
+         * text: a button with its own background stays put.
+         *
+         * Only what is on screen is animated, with the Web Animations API,
+         * so nothing is left behind in the styles and the reveal and hover
+         * animations are untouched.
+         */
+        var OUT_MS = 130;
+        var IN_MS = 190;
+        var RISE_PX = 5;
+        var target = lang;
+        var switching = false;
+
+        function onScreenText(code) {
+          var found = [];
+          var nodes = document.querySelectorAll('[data-lang="' + code + '"]');
+          var limit = window.innerHeight + 100;
+          for (var i = 0; i < nodes.length; i++) {
+            var rect = nodes[i].getBoundingClientRect();
+            if (rect.width && rect.bottom > -100 && rect.top < limit) {
+              found.push(nodes[i]);
+            }
+          }
+          return found;
+        }
+
+        /** The parents that may move: plain text blocks, each once. */
+        function movable(nodes) {
+          var parents = [];
+          for (var i = 0; i < nodes.length; i++) {
+            var parent = nodes[i].parentElement;
+            if (!parent || parents.indexOf(parent) !== -1) continue;
+            var background = getComputedStyle(parent).backgroundColor;
+            var plain = background === "transparent" || /, 0\)$/.test(background);
+            if (plain) parents.push(parent);
+          }
+          return parents;
+        }
+
+        function animateAll(nodes, keyframes, options) {
+          var running = [];
+          for (var i = 0; i < nodes.length; i++) {
+            running.push(nodes[i].animate(keyframes, options));
+          }
+          return running;
+        }
+
+        function cancelAll(animations) {
+          for (var i = 0; i < animations.length; i++) animations[i].cancel();
+        }
+
+        function setLang(next) {
+          if (LANGS.indexOf(next) === -1) return;
+          // Clicks during a transition only change where it ends up.
+          target = next;
+          if (!switching) run();
+        }
+
+        function run() {
+          if (target === lang) return;
+
+          var reduced =
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (reduced || !document.documentElement.animate) {
+            applyLang(target);
+            return;
+          }
+
+          switching = true;
+          var leaving = onScreenText(lang);
+          var out = { duration: OUT_MS, easing: "ease-in", fill: "forwards" };
+          var fading = animateAll(leaving, [{ opacity: 1 }, { opacity: 0 }], out).concat(
+            animateAll(
+              movable(leaving),
+              [{ translate: "0 0" }, { translate: "0 -" + RISE_PX + "px" }],
+              out,
+            ),
+          );
+
+          setTimeout(function () {
+            // Still wanted? A second click may have changed it back.
+            if (target !== lang) applyLang(target);
+            cancelAll(fading);
+
+            var arriving = onScreenText(lang);
+            var into = { duration: IN_MS, easing: "ease-out" };
+            animateAll(arriving, [{ opacity: 0 }, {}], into);
+            animateAll(
+              movable(arriving),
+              [{ translate: "0 " + RISE_PX + "px" }, {}],
+              into,
+            );
+
+            setTimeout(function () {
+              switching = false;
+              // Clicked again meanwhile: go there now.
+              run();
+            }, IN_MS);
+          }, OUT_MS);
         }
 
         document.addEventListener("click", function (event) {

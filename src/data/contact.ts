@@ -1,19 +1,19 @@
-import emailIcon from "@/assets/images/profile/email-icon.png";
-import phoneIcon from "@/assets/images/profile/phone-icon.png";
-import { siteConfig } from "@/config/site";
-import { same, tr } from "@/i18n";
-import { socialLinks } from "@/data/socialLinks";
-import type { ContactItem } from "@/types/contact";
-import type { SocialPlatform } from "@/types/socialLink";
+import emailIcon from '@/assets/images/profile/email-icon.png';
+import phoneIcon from '@/assets/images/profile/phone-icon.png';
+import { siteConfig } from '@/config/site';
+import { same, tr } from '@/i18n';
+import { socialLinks } from '@/data/socialLinks';
+import type { ContactItem } from '@/types/contact';
+import type { SocialPlatform } from '@/types/socialLink';
 
 /** Phone number in international format, without spaces (used in tel:). */
-const phone = "+381692020197";
+const phone = '+381692010197';
 /** The same number as shown to visitors. */
-const phoneDisplay = "+381 69 202 0197";
+const phoneDisplay = '+381 69 201 0197';
 
 /** What to show as the value for each social profile. */
 const socialHandles: Record<SocialPlatform, string> = {
-  instagram: "@social.stud1o",
+  instagram: '@social.stud1o',
   linkedin: siteConfig.name,
 };
 
