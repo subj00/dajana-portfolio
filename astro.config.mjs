@@ -10,6 +10,12 @@ export default defineConfig({
   // Used for canonical URLs, Open Graph URLs and the sitemap later on.
   site: siteConfig.url,
 
+  // Serbian at "/", English at "/en/". Text lives in src/i18n.
+  i18n: {
+    locales: ["sr", "en"],
+    defaultLocale: "sr",
+  },
+
   // React is only hydrated for components that use a `client:*` directive.
   integrations: [react()],
 

@@ -4,10 +4,13 @@
  * kind of entry (work, education, awards).
  */
 import CareerGroup from "@/components/experience/CareerGroup.astro";
+import Localized from "@/components/ui/Localized.astro";
 import Section from "@/components/ui/Section.astro";
 import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { sectionIds } from "@/config/site";
-import { careerGroups } from "@/data/experience";
+import { tr, zip } from "@/i18n";
+
+const careerGroups = zip(tr((d) => d.career.groups));
 ---
 
 <Section
@@ -22,7 +25,7 @@ import { careerGroups } from "@/data/experience";
         id={`${sectionIds.experience}-heading`}
         class="text-center tablet:text-left"
       >
-        Karijera i obrazovanje
+        <Localized text={tr((d) => d.career.heading)} />
       </SectionHeading>
     </div>
 

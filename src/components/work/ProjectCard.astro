@@ -7,6 +7,8 @@
  * and the image eases in a little inside the frame.
  */
 import { Image } from "astro:assets";
+import Localized from "@/components/ui/Localized.astro";
+import { field, localizedAttr, toLang, tr } from "@/i18n";
 import type { Project } from "@/types/project";
 
 export interface Props {
@@ -14,6 +16,9 @@ export interface Props {
 }
 
 const { project } = Astro.props;
+const text = tr((d) => d.portfolio.projects[project.slug]);
+const alt = field(text, "imageAlt");
+const pageLang = toLang(Astro.currentLocale);
 ---
 
 <article
@@ -22,7 +27,8 @@ const { project } = Astro.props;
   <div class="aspect-3/2 overflow-hidden">
     <Image
       src={project.image}
-      alt={project.imageAlt}
+      alt={alt[pageLang]}
+      {...localizedAttr("alt", alt, pageLang)}
       widths={[480, 720, 960, 1280]}
       sizes="(min-width: 56rem) 45vw, 92vw"
       class="size-full object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
@@ -34,10 +40,10 @@ const { project } = Astro.props;
     <h3
       class="text-[clamp(1.25rem,1.7vw,1.5rem)] leading-snug font-semibold tracking-[0.01em]"
     >
-      {project.title}
+      <Localized text={field(text, "title")} />
     </h3>
     <p class="mt-3 text-[0.9375rem] leading-[1.65] text-muted">
-      {project.description}
+      <Localized text={field(text, "description")} />
     </p>
   </div>
 </article>

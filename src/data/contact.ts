@@ -1,6 +1,7 @@
 import emailIcon from "@/assets/images/profile/email-icon.png";
 import phoneIcon from "@/assets/images/profile/phone-icon.png";
 import { siteConfig } from "@/config/site";
+import { same, tr } from "@/i18n";
 import { socialLinks } from "@/data/socialLinks";
 import type { ContactItem } from "@/types/contact";
 import type { SocialPlatform } from "@/types/socialLink";
@@ -19,19 +20,19 @@ const socialHandles: Record<SocialPlatform, string> = {
 /** Rows of the contact section, in display order. */
 export const contactItems: ContactItem[] = [
   {
-    label: "Email",
+    label: tr((d) => d.contact.email),
     value: siteConfig.email,
     href: `mailto:${siteConfig.email}`,
     icon: emailIcon,
   },
   {
-    label: "Telefon",
+    label: tr((d) => d.contact.phone),
     value: phoneDisplay,
     href: `tel:${phone}`,
     icon: phoneIcon,
   },
   ...socialLinks.map((link) => ({
-    label: link.label,
+    label: same(link.label),
     value: socialHandles[link.platform],
     href: link.url,
     icon: link.icon,

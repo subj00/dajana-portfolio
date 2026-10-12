@@ -1,0 +1,90 @@
+---
+/**
+ * "SR / EN" language switcher, in the navigation's type style.
+ *
+ * Each option is a real link to that language's page, so it works without
+ * JavaScript; with it, the script in BaseLayout.astro intercepts the click
+ * and switches in place. Which option looks active is decided in CSS from
+ * <html lang>, so it is always in step with the language shown.
+ *
+ * Under 23.4375rem (375px) the two options stack, without the slash, to save
+ * width in the phone header.
+ */
+import {
+  langPath,
+  languageNames,
+  languages,
+  localizedAttr,
+  toLang,
+  tr,
+} from "@/i18n";
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const pageLang = toLang(Astro.currentLocale);
+---
+
+<div
+  role="group"
+  {...localizedAttr("aria-label", tr((d) => d.language.label), pageLang)}
+  class:list={[
+    "flex flex-col items-center text-[0.65625rem] tracking-[0.04em] uppercase min-[22.5rem]:text-[0.6875rem] min-[23.4375rem]:flex-row sm:text-xs sm:tracking-[0.1em] lg:text-[0.8125rem] lg:tracking-[0.12em]",
+    className,
+  ]}
+>
+  {
+    languages.map((lang, index) => (
+      <>
+        {index > 0 && (
+          <span class="hidden text-muted/60 min-[23.4375rem]:inline" aria-hidden="true">
+            /
+          </span>
+        )}
+        <a
+          href={langPath(lang)}
+          hreflang={lang}
+          lang={lang}
+          data-lang-switch={lang}
+          aria-label={languageNames[lang]}
+          aria-current={lang === pageLang ? "true" : undefined}
+          class="lang-option rounded-sm px-1 py-1 min-[23.4375rem]:py-2 md:px-1.5"
+        >
+          {lang}
+        </a>
+      </>
+    ))
+  }
+</div>
+
+<style>
+  .lang-option {
+    color: var(--color-muted);
+    font-weight: 500;
+    transition: color 300ms var(--ease-out-soft);
+  }
+
+  @media (hover: hover) {
+    .lang-option:hover {
+      color: var(--color-foreground);
+    }
+  }
+
+  /* The option matching the language on screen. */
+  :global(html[lang="sr"]) .lang-option[data-lang-switch="sr"],
+  :global(html[lang="en"]) .lang-option[data-lang-switch="en"] {
+    color: var(--color-foreground);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lang-option {
+      transition: none;
+    }
+  }
+</style>

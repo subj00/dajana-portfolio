@@ -43,6 +43,25 @@ The site is one page. Home, Work, Experience and Contact are sections of
 `src/styles/global.css`; `ui/Section.astro` applies the `scroll-margin-top`
 that keeps section tops clear of the sticky header.
 
+## Languages (Serbian / English)
+
+Serbian is the default language at `/`; English is at `/en/`. Both routes
+render the same page (`src/components/HomePage.astro`).
+
+- **All translatable text** is in `src/i18n/translations.ts`: one dictionary
+  per language with identical keys (TypeScript enforces this). Edit text
+  there, in both languages.
+- Components read text with `tr((d) => d.some.key)` from `src/i18n` and
+  render it with `<Localized text={...} />`, which outputs every language;
+  CSS in `global.css` shows the one matching `<html lang>`. Translated
+  attributes (alt text, labels, meta tags) use `localizedAttr(...)`.
+- The **SR / EN** switcher changes language in place, without a page load.
+  The choice is saved in `localStorage` under the key `lang` and restored on
+  the next visit; with nothing saved, the language of the URL is used. The
+  script is in `src/layouts/BaseLayout.astro`.
+- Section anchors (`#pocetna`, `#portfolio`, `#karijera`, `#kontakt`) are the
+  same in both languages.
+
 ## Conventions
 
 - Astro components by default; React (`.tsx`) only for real client-side state,

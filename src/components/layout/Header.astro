@@ -3,8 +3,22 @@
  * Site header: a full-width, sticky bar with the in-page navigation.
  * Links are native anchors; smooth scrolling is handled in global.css and
  * the scroll offset for the sticky bar in ui/Section.astro.
+ *
+ * The language switcher is the last item of the same row. Below `md` it
+ * is spaced like the links; from `md` up it sits at the far right, outside
+ * the flow of the links so they stay centred (on tablets the links make a
+ * little room for it on the right).
+ *
+ * On phones the row is tight: the links use a small gap, a long label
+ * wraps onto two lines. Under 23.4375rem (375px) the switcher stacks "SR"
+ * over "EN", and under 22.5rem (360px) the type is also half a pixel smaller.
  */
-import { siteConfig } from "@/config/site";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher.astro";
+import Localized from "@/components/ui/Localized.astro";
+import { sectionIds, siteConfig } from "@/config/site";
+import { localizedAttr, toLang, tr } from "@/i18n";
+
+const pageLang = toLang(Astro.currentLocale);
 ---
 
 <!--
@@ -13,28 +27,31 @@ import { siteConfig } from "@/config/site";
 -->
 <header class="sticky top-0 z-50 w-full bg-background">
   <nav
-    aria-label="Glavna navigacija"
-    class="flex h-header items-center px-3 sm:px-[8%]"
+    {...localizedAttr("aria-label", tr((d) => d.nav.label), pageLang)}
+    class="flex h-header items-center px-2 min-[22.5rem]:px-2.5 sm:px-[8%] md:pr-[calc(8%+3rem)] lg:pr-[8%]"
   >
     <!--
       Below `sm` the links are capped in width, so a long label wraps onto
       two lines instead of overflowing.
     -->
     <ul
-      class="flex w-full items-center justify-between gap-x-2 sm:justify-evenly sm:gap-x-6"
+      class="flex w-full items-center justify-between gap-x-1.5 sm:justify-evenly sm:gap-x-6"
     >
       {
-        siteConfig.navigation.map((item) => (
+        siteConfig.navigation.map((key) => (
           <li class="max-sm:max-w-24">
             <a
-              href={item.href}
-              class="nav-link relative block rounded-sm py-2 text-center text-[0.6875rem] leading-snug font-semibold tracking-[0.04em] text-foreground uppercase sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
+              href={`#${sectionIds[key]}`}
+              class="nav-link relative block rounded-sm py-2 text-center text-[0.65625rem] leading-snug font-semibold tracking-[0.02em] text-foreground uppercase min-[22.5rem]:text-[0.6875rem] min-[22.5rem]:tracking-[0.03em] sm:text-xs sm:tracking-[0.1em] sm:whitespace-nowrap lg:text-[0.8125rem] lg:tracking-[0.12em]"
             >
-              {item.label}
+              <Localized text={tr((d) => d.nav[key])} />
             </a>
           </li>
         ))
       }
+      <li class="shrink-0 md:absolute md:inset-y-0 md:right-[4%] md:flex md:items-center">
+        <LanguageSwitcher />
+      </li>
     </ul>
   </nav>
 </header>

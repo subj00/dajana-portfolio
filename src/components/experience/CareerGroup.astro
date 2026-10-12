@@ -13,13 +13,19 @@
  * the left; stacked above it (mobile) it rises like everything else, so
  * nothing moves sideways on narrow screens.
  */
-import type { CareerGroup } from "@/types/experience";
+import Localized from "@/components/ui/Localized.astro";
+import { field, zip, type Localized as LocalizedValue } from "@/i18n";
+import type { Dictionary } from "@/i18n/translations";
+
+type CareerGroup = Dictionary["career"]["groups"][number];
 
 export interface Props {
-  group: CareerGroup;
+  /** The group in every language (see ExperienceSection.astro). */
+  group: LocalizedValue<CareerGroup>;
 }
 
 const { group } = Astro.props;
+const entries = zip(field(group, "entries"));
 ---
 
 <section
@@ -31,7 +37,7 @@ const { group } = Astro.props;
     data-reveal
     style="--reveal-duration: 700ms"
   >
-    {group.title}
+    <Localized text={field(group, "title")} />
   </h3>
 
   <!--
@@ -45,7 +51,7 @@ const { group } = Astro.props;
     style="--reveal-distance: 0px; --reveal-delay: 100ms; --reveal-duration: 600ms"
   >
     {
-      group.entries.map((entry, index) => (
+      entries.map((entry, index) => (
         <li
           class="grid gap-x-8 gap-y-2 border-b border-background/15 py-5 tablet:grid-cols-[minmax(0,1fr)_auto] tablet:items-baseline lg:py-6"
           data-reveal
@@ -53,14 +59,14 @@ const { group } = Astro.props;
         >
           <div>
             <p class="text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-semibold tracking-[-0.01em]">
-              {entry.title}
+              <Localized text={field(entry, "title")} />
             </p>
             <p class="mt-1 text-[0.9375rem] leading-normal text-background/60">
-              {entry.subtitle}
+              <Localized text={field(entry, "subtitle")} />
             </p>
           </div>
           <p class="text-[0.9375rem] font-medium whitespace-nowrap text-background/70 tabular-nums tablet:text-right">
-            {entry.period}
+            <Localized text={field(entry, "period")} />
           </p>
         </li>
       ))

@@ -1,0 +1,18 @@
+---
+/**
+ * Text in every language. Renders one inline element per language; the
+ * rule in global.css shows only the one that matches <html lang>, so the
+ * language can change without loading another page.
+ *
+ *   <Localized text={tr((d) => d.hero.cta)} />
+ */
+import { languages, type Localized } from "@/i18n";
+
+export interface Props {
+  text: Localized;
+}
+
+const { text } = Astro.props;
+---
+
+{languages.map((lang) => <span data-lang={lang}>{text[lang]}</span>)}

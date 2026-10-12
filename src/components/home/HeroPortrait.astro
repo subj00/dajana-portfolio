@@ -10,7 +10,7 @@
  */
 import { Image } from "astro:assets";
 import profilePhoto from "@/assets/images/profile/profile-photo.png";
-import { siteConfig } from "@/config/site";
+import { localizedAttr, toLang, tr } from "@/i18n";
 
 /**
  * Bounding box of the figure inside the source image, in source pixels.
@@ -22,6 +22,9 @@ const percent = (value: number) => `${(value * 100).toFixed(2)}%`;
 
 /** Width of the whole image relative to the height of the figure. */
 const imageToFigureHeight = profilePhoto.width / figure.height;
+
+const alt = tr((d) => d.hero.portraitAlt);
+const pageLang = toLang(Astro.currentLocale);
 ---
 
 <div
@@ -30,7 +33,8 @@ const imageToFigureHeight = profilePhoto.width / figure.height;
 >
   <Image
     src={profilePhoto}
-    alt={`Portret – ${siteConfig.name}`}
+    alt={alt[pageLang]}
+    {...localizedAttr("alt", alt, pageLang)}
     widths={[640, 960, 1280, 1600, profilePhoto.width]}
     sizes={`${Math.round(imageToFigureHeight * 62)}vh`}
     loading="eager"

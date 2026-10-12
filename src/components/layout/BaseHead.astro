@@ -1,54 +1,81 @@
 ---
 /**
- * Document metadata and SEO tags. Defaults come from src/config/site.ts.
+ * Document metadata and SEO tags, in the page's language.
+ *
+ * Translated values also carry both versions as data attributes so the
+ * language script (BaseLayout.astro) can keep the title, description and
+ * canonical URL in step when the language is switched without a page load.
  */
 import { siteConfig } from "@/config/site";
+import {
+  defaultLang,
+  langPath,
+  languages,
+  localizedAttr,
+  ogLocales,
+  toLang,
+  tr,
+  type Localized,
+} from "@/i18n";
 import "@/styles/global.css";
 
 export interface Props {
-  /** Page title. Omit on the home page to use the site title alone. */
-  title?: string;
-  description?: string;
   /** Absolute or root-relative path to a social preview image. */
   image?: string;
   noIndex?: boolean;
 }
 
-const {
-  title,
-  description = siteConfig.description,
-  image = siteConfig.seo.defaultOgImage,
-  noIndex = false,
-} = Astro.props;
+const { image = siteConfig.seo.defaultOgImage, noIndex = false } = Astro.props;
 
-const fullTitle = title
-  ? `${title}${siteConfig.titleSeparator}${siteConfig.siteTitle}`
-  : siteConfig.siteTitle;
+const lang = toLang(Astro.currentLocale);
+const title = tr((d) => d.meta.title);
+const description = tr((d) => d.meta.description);
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const imageUrl = image ? new URL(image, Astro.site).toString() : undefined;
+const absolute = (path: string) => new URL(path, Astro.site).toString();
+/** Absolute URL of this page in each language. */
+const urls: Localized = {
+  sr: absolute(langPath("sr")),
+  en: absolute(langPath("en")),
+};
+const imageUrl = image ? absolute(image) : undefined;
+const faviconUrl = `${langPath(defaultLang)}favicon.svg`;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href={faviconUrl} />
 
-<title>{fullTitle}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={canonicalUrl} />
+<title data-i18n-text data-sr-text={title.sr} data-en-text={title.en}
+  >{title[lang]}</title
+>
+<meta name="description" {...localizedAttr("content", description, lang)} />
+<link rel="canonical" {...localizedAttr("href", urls, lang)} />
+{
+  languages.map((code) => (
+    <link rel="alternate" hreflang={code} href={urls[code]} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={urls[defaultLang]} />
 {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={siteConfig.siteTitle} />
-<meta property="og:title" content={fullTitle} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={title[defaultLang]} />
+<meta property="og:locale" {...localizedAttr("content", ogLocales, lang)} />
+<meta property="og:title" {...localizedAttr("content", title, lang)} />
+<meta
+  property="og:description"
+  {...localizedAttr("content", description, lang)}
+/>
+<meta property="og:url" {...localizedAttr("content", urls, lang)} />
 {imageUrl && <meta property="og:image" content={imageUrl} />}
 
 <!-- Twitter -->
 <meta name="twitter:card" content={siteConfig.seo.twitterCard} />
-<meta name="twitter:title" content={fullTitle} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:title" {...localizedAttr("content", title, lang)} />
+<meta
+  name="twitter:description"
+  {...localizedAttr("content", description, lang)}
+/>
 {imageUrl && <meta name="twitter:image" content={imageUrl} />}

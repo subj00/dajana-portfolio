@@ -1,18 +1,6 @@
 ---
-/**
- * The only page of the site. Each section is an anchor target for the
- * navigation (see sectionIds in src/config/site.ts).
- */
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import HomeSection from "@/components/home/HomeSection.astro";
-import WorkSection from "@/components/work/WorkSection.astro";
-import ExperienceSection from "@/components/experience/ExperienceSection.astro";
-import ContactSection from "@/components/contact/ContactSection.astro";
+/** Serbian (default language) route. */
+import HomePage from "@/components/HomePage.astro";
 ---
 
-<BaseLayout>
-  <HomeSection />
-  <WorkSection />
-  <ExperienceSection />
-  <ContactSection />
-</BaseLayout>
+<HomePage />

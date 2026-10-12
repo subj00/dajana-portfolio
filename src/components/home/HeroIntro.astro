@@ -8,8 +8,9 @@
  * when everything is on screen together.
  */
 import ButtonLink from "@/components/ui/ButtonLink.astro";
-import { siteConfig } from "@/config/site";
-import { hero } from "@/data/hero";
+import Localized from "@/components/ui/Localized.astro";
+import { sectionIds, siteConfig } from "@/config/site";
+import { tr } from "@/i18n";
 ---
 
 <div
@@ -27,15 +28,15 @@ import { hero } from "@/data/hero";
     data-reveal
     style="--reveal-delay: calc(var(--hero-intro-delay, 0ms) + 90ms)"
   >
-    {hero.description}
+    <Localized text={tr((d) => d.hero.description)} />
   </p>
   <div
     class="mt-7"
     data-reveal
     style="--reveal-delay: calc(var(--hero-intro-delay, 0ms) + 180ms)"
   >
-    <ButtonLink href={hero.cta.href} arrow>
-      {hero.cta.label}
+    <ButtonLink href={`#${sectionIds.contact}`} arrow>
+      <Localized text={tr((d) => d.hero.cta)} />
     </ButtonLink>
   </div>
 </div>

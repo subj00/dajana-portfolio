@@ -1,14 +1,14 @@
 import type { ImageMetadata } from "astro";
+import type { Dictionary } from "@/i18n/translations";
 
-/** One card of the Portfolio section. */
+/** Slugs that have text in the translations (`portfolio.projects`). */
+export type ProjectSlug = keyof Dictionary["portfolio"]["projects"];
+
+/** One card of the Portfolio section. Its text lives in the translations. */
 export interface Project {
-  /** Unique, URL-safe identifier, e.g. "social-stud1o". */
-  slug: string;
-  title: string;
-  description: string;
+  slug: ProjectSlug;
   /** Imported from src/assets so Astro can optimize it. */
   image: ImageMetadata;
-  imageAlt: string;
   /**
    * Which part of the image to keep when it is cropped to the card's frame,
    * as a CSS object-position value. Defaults to the centre.

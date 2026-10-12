@@ -19,20 +19,27 @@
  *
  * Only opacity and transforms are animated.
  */
+import Localized from "@/components/ui/Localized.astro";
 import { siteConfig } from "@/config/site";
+import { tr, zip } from "@/i18n";
 
 const [firstName, ...rest] = siteConfig.name.split(" ");
 const lastName = rest.join(" ");
+
+/** The words, in every language; matched to the layout below by position. */
+const wordTexts = zip(tr((d) => d.intro.words));
 
 /**
  * The composition. Positions are percentages of the word area; right-hand
  * words are anchored from the right so they cannot run off small screens.
  * `size` multiplies the fluid base size; `enter` is the small offset a word
  * arrives from and `exit` the direction it drifts away in.
+ *
+ * The slots were composed around the Serbian words; a translation of very
+ * different length may need its slot adjusted.
  */
-const words = [
+const layout = [
   {
-    text: "Ideja",
     position: "left: 8%; top: 4%",
     size: 1.7,
     weight: 300,
@@ -43,7 +50,6 @@ const words = [
     exit: "-18px -14px",
   },
   {
-    text: "Strategija",
     position: "right: 2%; top: 20%",
     size: 2,
     weight: 800,
@@ -54,7 +60,6 @@ const words = [
     exit: "20px -12px",
   },
   {
-    text: "Kreativa",
     position: "left: 22%; top: 42%",
     size: 2.7,
     weight: 800,
@@ -66,7 +71,6 @@ const words = [
     exit: "-6px 10px",
   },
   {
-    text: "Analitika",
     position: "left: 2%; top: 76%",
     size: 1.25,
     weight: 500,
@@ -77,7 +81,6 @@ const words = [
     exit: "-18px 14px",
   },
   {
-    text: "Mreže",
     position: "right: 9%; top: 75%",
     size: 2.2,
     weight: 700,
@@ -93,12 +96,12 @@ const words = [
 <div id="intro" class="intro" aria-hidden="true">
   <div class="intro-words">
     {
-      words.map((word, index) => (
+      layout.map((word, index) => (
         <span
           class:list={["intro-word", word.outline && "intro-outline"]}
           style={`${word.position}; --size: ${word.size}; --weight: ${word.weight}; --tracking: ${word.tracking}; --rotate: ${word.rotate}; --opacity: ${word.opacity}; --enter: ${word.enter}; --exit: ${word.exit}; --index: ${index}`}
         >
-          {word.text}
+          <Localized text={wordTexts[index]} />
         </span>
       ))
     }

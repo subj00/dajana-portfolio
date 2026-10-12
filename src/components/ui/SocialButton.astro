@@ -7,6 +7,8 @@
  * PNG, so it is inverted along with it.
  */
 import { Image } from "astro:assets";
+import Localized from "@/components/ui/Localized.astro";
+import { tr } from "@/i18n";
 import type { SocialLink } from "@/types/socialLink";
 
 export interface Props {
@@ -35,5 +37,7 @@ const { link, class: className } = Astro.props;
     class="size-5 transition duration-300 ease-out-soft group-hover:invert"
   />
   {link.label}
-  <span class="sr-only">(otvara se u novoj kartici)</span>
+  <span class="sr-only"
+    ><Localized text={tr((d) => d.a11y.opensInNewTab)} /></span
+  >
 </a>

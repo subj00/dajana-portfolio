@@ -13,6 +13,17 @@
     text-size-adjust: 100%;
   }
 
+  /*
+   * Languages. Translated text is in the page in every language, each in
+   * an element marked with its language (ui/Localized.astro). Only the one
+   * matching <html lang> is shown; the script in BaseLayout.astro changes
+   * that attribute to switch language without loading another page.
+   */
+  html[lang="sr"] [data-lang="en"],
+  html[lang="en"] [data-lang="sr"] {
+    display: none;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;

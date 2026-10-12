@@ -11,8 +11,9 @@
  * Reveal: one short sequence for the whole footer, started once about a
  * third of it is on screen: statement, then identity, then the small print.
  */
+import Localized from "@/components/ui/Localized.astro";
 import { siteConfig } from "@/config/site";
-import { footer } from "@/data/footer";
+import { tr } from "@/i18n";
 
 const year = new Date().getFullYear();
 ---
@@ -27,7 +28,7 @@ const year = new Date().getFullYear();
         data-reveal
         style="--reveal-duration: 800ms"
       >
-        {footer.statement}
+        <Localized text={tr((d) => d.footer.statement)} />
       </p>
 
       <div
@@ -41,7 +42,7 @@ const year = new Date().getFullYear();
         <p
           class="mt-2 text-[0.6875rem] font-semibold tracking-[0.14em] text-background/60 uppercase"
         >
-          {footer.disciplines.join(" • ")}
+          {siteConfig.disciplines.join(" • ")}
         </p>
       </div>
     </div>
@@ -53,10 +54,10 @@ const year = new Date().getFullYear();
     >
       <p>&copy; {year} {siteConfig.name}</p>
       <p>
-        {footer.credit.label}
+        <Localized text={tr((d) => d.footer.credit)} />
         <span
           class="font-medium text-background/65 transition-colors duration-300 ease-out-soft hover:text-background"
-          >{footer.credit.author}</span
+          >{siteConfig.developer}</span
         >
       </p>
     </div>

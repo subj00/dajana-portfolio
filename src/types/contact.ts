@@ -1,6 +1,8 @@
+import type { Localized } from "@/i18n";
+
 export interface ContactItem {
   /** Small label above the value, e.g. "Email". */
-  label: string;
+  label: Localized;
   /** Text shown to the visitor. */
   value: string;
   /** Link target: mailto:, tel: or a URL. */

@@ -6,10 +6,12 @@
  * below that, one per row.
  */
 import ProjectCard from "@/components/work/ProjectCard.astro";
+import Localized from "@/components/ui/Localized.astro";
 import Section from "@/components/ui/Section.astro";
 import SectionHeading from "@/components/ui/SectionHeading.astro";
 import { sectionIds } from "@/config/site";
 import { projects } from "@/data/projects";
+import { tr } from "@/i18n";
 ---
 
 <Section
@@ -24,7 +26,7 @@ import { projects } from "@/data/projects";
         id={`${sectionIds.work}-heading`}
         class="text-center tablet:text-left"
       >
-        Portfolio
+        <Localized text={tr((d) => d.portfolio.heading)} />
       </SectionHeading>
     </div>
 

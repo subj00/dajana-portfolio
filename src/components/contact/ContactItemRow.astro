@@ -9,6 +9,8 @@
  */
 import { Image } from "astro:assets";
 import ArrowIcon from "@/components/ui/ArrowIcon.astro";
+import Localized from "@/components/ui/Localized.astro";
+import { tr } from "@/i18n";
 import type { ContactItem } from "@/types/contact";
 
 export interface Props {
@@ -50,7 +52,7 @@ const [emailLocal, emailDomain] = item.href.startsWith("mailto:")
     <span
       class="block text-[0.6875rem] font-semibold tracking-[0.14em] text-muted uppercase"
     >
-      {item.label}
+      <Localized text={item.label} />
     </span>
     <span
       class="mt-1 block text-[clamp(1.0625rem,1.5vw,1.375rem)] leading-snug font-medium tracking-[-0.01em] wrap-anywhere"
@@ -64,7 +66,13 @@ const [emailLocal, emailDomain] = item.href.startsWith("mailto:")
       }
     </span>
   </span>
-  {item.external && <span class="sr-only">(otvara se u novoj kartici)</span>}
+  {
+    item.external && (
+      <span class="sr-only">
+        <Localized text={tr((d) => d.a11y.opensInNewTab)} />
+      </span>
+    )
+  }
   <ArrowIcon
     class="size-4 shrink-0 text-muted transition duration-300 ease-out-soft group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-foreground group-focus-visible:translate-x-1 group-focus-visible:-translate-y-1 group-focus-visible:text-foreground motion-reduce:transition-colors motion-reduce:group-hover:translate-0"
   />
