@@ -8,7 +8,7 @@
  * not.
  *
  * Not here on purpose: proper names and values that are the same in every
- * language (the name, email, phone, social handles, URLs). Those live in
+ * language (the name, email, social handles, URLs). Those live in
  * src/config/site.ts and src/data.
  */
 
@@ -163,7 +163,6 @@ const sr = {
     heading: "Kontakt",
     photoAlt: "Dajana Subotić za radnim stolom",
     email: "Email",
-    phone: "Telefon",
   },
 
   footer: {
@@ -327,7 +326,6 @@ const en: Dictionary = {
     heading: "Contact",
     photoAlt: "Dajana Subotić at her desk",
     email: "Email",
-    phone: "Phone",
   },
 
   footer: {
